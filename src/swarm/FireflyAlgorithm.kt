@@ -18,16 +18,17 @@ class FireflyAlgorithm {
     val roomWidth = 150f
     val roomHeight = 100f
 
-    val population: MutableList<Room> = mutableListOf()
+    val population: MutableList<Individual> = mutableListOf()
 
     fun runOptimisation() {
-        var room = initRoom()
         generateInitialPopulation()
     }
 
     private fun generateInitialPopulation() {
-        (0 until populationSize).forEach {
+        var room = initRoom()
 
+        (0 until populationSize).forEach {
+            population.add(Individual(room))
             val pieceWidth = 0
             val pieceHeight = 0
         }
