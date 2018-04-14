@@ -2,7 +2,7 @@ package swarm
 
 import model.FurniturePiece
 import model.Room
-import testing.RastriginTest
+import evaluation.RastriginTest
 import java.lang.Math.random
 import kotlin.math.exp
 

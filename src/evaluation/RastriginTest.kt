@@ -1,4 +1,4 @@
-package testing
+package evaluation
 
 import swarm.Individual
 import kotlin.math.PI
