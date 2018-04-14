@@ -46,16 +46,16 @@ class VisualizationWindow : Application() {
 
     private fun drawRoomBounds(gc: GraphicsContext, it: FireflyAlgorithm) {
         gc.stroke = Color.BLACK
-        gc.lineWidth = 8.0
-        gc.strokeRect(0.0, 0.0, it.roomWidth.toDouble(), it.roomHeight.toDouble())
+        gc.lineWidth = 4.0
+        gc.strokeRect(0.0, 0.0, it.roomWidth, it.roomHeight)
     }
 
     private fun drawFurniturePieces(gc: GraphicsContext, individual: Individual, color: Color) {
         gc.stroke = color
-        gc.lineWidth = 4.0
+        gc.lineWidth = 2.0
         individual.coords.forEachIndexed { index, (x, y) ->
             val furniturePiece = individual.room.furnitureList[index]
-            gc.strokeRect(x, y, furniturePiece.width,  furniturePiece.height)
+            gc.strokeRect(x - furniturePiece.width / 2, y - furniturePiece.height / 2, furniturePiece.width,  furniturePiece.height)
         }
     }
 

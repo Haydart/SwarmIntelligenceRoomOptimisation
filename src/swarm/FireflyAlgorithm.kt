@@ -3,6 +3,7 @@ package swarm
 import model.FurniturePiece
 import model.Room
 import evaluation.RastriginTest
+import evaluation.RoomConfigurationEvaluator
 import java.lang.Math.random
 import kotlin.math.exp
 
@@ -22,7 +23,7 @@ class FireflyAlgorithm {
     val roomHeight = 100.0
 
     val population: MutableList<Individual> = mutableListOf()
-    val testFunction = RastriginTest()
+    val testFunction = RoomConfigurationEvaluator()
 
     init {
         generateInitialPopulation()
@@ -64,6 +65,11 @@ class FireflyAlgorithm {
         furnitureList.add(FurniturePiece(10.0, 5.0))
         furnitureList.add(FurniturePiece(17.0, 12.0))
         furnitureList.add(FurniturePiece(10.0, 10.0))
+        furnitureList.add(FurniturePiece(20.0, 5.0))
+        furnitureList.add(FurniturePiece(25.0, 10.0))
+        furnitureList.add(FurniturePiece(5.0, 15.0))
+        furnitureList.add(FurniturePiece(12.0, 17.0))
+        furnitureList.add(FurniturePiece(10.0, 25.0))
 
         return Room(furnitureList, roomWidth, roomHeight)
     }
