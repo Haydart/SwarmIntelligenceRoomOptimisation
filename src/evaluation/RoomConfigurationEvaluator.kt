@@ -7,7 +7,7 @@ import model.Room
  */
 class RoomConfigurationEvaluator {
 
-    fun evaluate(room: Room): Float {
-        return 0f
+    fun evaluate(room: Room): Double {
+        return 0.0
     }
 }

@@ -2,28 +2,27 @@ package swarm
 
 import model.Room
 import java.lang.Math.random
-import kotlin.math.exp
 import kotlin.math.pow
 
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
-class Individual(room: Room) {
+class Individual(val room: Room) {
 
-    val coords: MutableList<Pair<Float, Float>> = mutableListOf()
-    var intensity = 0f
+    val coords: MutableList<Pair<Double, Double>> = mutableListOf()
+    var intensity = 0.0
 
     init {
         room.furnitureList.forEach {
             val x = random() * (room.width - it.width) + (it.width / 2)
             val y = random() * (room.height - it.height) + (it.height / 2)
 
-            coords.add(Pair(x.toFloat(), y.toFloat()))
+            coords.add(Pair(x, y))
         }
     }
 
-    fun distanceTo(other: Individual): Float {
-        var distance = 0f
+    fun distanceTo(other: Individual): Double {
+        var distance = 0.0
 
         (0 until other.coords.size).forEach { index ->
             distance += (other.coords[index].first - this.coords[index].first).pow(2)

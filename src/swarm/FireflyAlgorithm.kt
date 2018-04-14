@@ -11,21 +11,24 @@ import kotlin.math.exp
  */
 class FireflyAlgorithm {
 
-    val alpha = 0.8f
-    val beta = 0.8f
-    val gamma = 0.001f
+    val alpha = 0.8
+    val beta = 0.8
+    val gamma = 0.001
 
     val populationSize = 200
     val furnitureCount = 5
-    val generationCount = 1000
-    val roomWidth = 150f
-    val roomHeight = 100f
+    val generationCount = 500
+    val roomWidth = 150.0
+    val roomHeight = 100.0
 
     val population: MutableList<Individual> = mutableListOf()
     val testFunction = RastriginTest()
 
-    fun runOptimisation() {
+    init {
         generateInitialPopulation()
+    }
+
+    fun runOptimisation() {
         evaluatePopulation()
 
         var iteration = 0
@@ -34,17 +37,13 @@ class FireflyAlgorithm {
             (0 until populationSize).forEach { i ->
                 (0 until populationSize).forEach { j ->
                     if (population[j].intensity > population[i].intensity) {
-//                        println("Moving $i towards $j")
-//                        println(population[i].coords)
                         moveTowards(population[i], population[j])
-//                        println(population[i].coords)
                         evaluateIndividual(population[i])
                     }
                 }
             }
             collectStatistics()
             iteration++
-//            println("_________")
         }
     }
 
@@ -60,11 +59,11 @@ class FireflyAlgorithm {
 
     private fun initRoom(): Room {
         val furnitureList = mutableListOf<FurniturePiece>()
-        furnitureList.add(FurniturePiece(20f, 15f))
-        furnitureList.add(FurniturePiece(25f, 10f))
-//        furnitureList.add(FurniturePiece(10f, 5f))
-//        furnitureList.add(FurniturePiece(17f, 12f))
-//        furnitureList.add(FurniturePiece(10f, 10f))
+        furnitureList.add(FurniturePiece(20.0, 15.0))
+        furnitureList.add(FurniturePiece(25.0, 10.0))
+        furnitureList.add(FurniturePiece(10.0, 5.0))
+        furnitureList.add(FurniturePiece(17.0, 12.0))
+        furnitureList.add(FurniturePiece(10.0, 10.0))
 
         return Room(furnitureList, roomWidth, roomHeight)
     }
@@ -74,8 +73,8 @@ class FireflyAlgorithm {
         val dominantIndividualAttractiveness = beta * exp(-gamma * distance)
 
         recessive.coords.forEachIndexed { index, (x, y) ->
-            val newX = x + (dominantIndividualAttractiveness * (dominant.coords[index].first - x) + alpha * (2 * random() - 1).toFloat())
-            val newY = y + (dominantIndividualAttractiveness * (dominant.coords[index].second - y) + alpha * (2 * random() - 1).toFloat())
+            val newX = x + dominantIndividualAttractiveness * (dominant.coords[index].first - x) + alpha * (2 * random() - 1)
+            val newY = y + dominantIndividualAttractiveness * (dominant.coords[index].second - y) + alpha * (2 * random() - 1)
             recessive.coords[index] = Pair(newX, newY)
         }
     }
@@ -94,7 +93,7 @@ class FireflyAlgorithm {
     }
 
     fun collectStatistics() {
-        var bestScore = 0f
+        var bestScore = 0.0
         var bestIndividual: Individual? = null
         population.forEach {
             if (it.intensity > bestScore) {
