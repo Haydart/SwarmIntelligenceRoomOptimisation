@@ -2,6 +2,8 @@ package swarm
 
 import model.FurniturePiece
 import model.Room
+import java.lang.Math.random
+import kotlin.math.exp
 
 /**
  * Created by r.makowiecki on 14/04/2018.
@@ -22,6 +24,29 @@ class FireflyAlgorithm {
 
     fun runOptimisation() {
         generateInitialPopulation()
+
+        var iteration = 0
+
+        while (iteration < generationCount) {
+            (0 until populationSize).forEach { i ->
+                (0 until populationSize).forEach { j ->
+                    if (population[j].intensity > population[i].intensity) {
+                        moveTowards(population[i], population[j])
+                    }
+                }
+            }
+        }
+    }
+
+    private fun moveTowards(recessive: Individual, dominant: Individual) {
+        val distance = recessive.distanceTo(dominant)
+        val dominantIndividualAttractiveness = beta * exp(-gamma * distance)
+
+        recessive.coords.forEachIndexed { index, (x, y) ->
+            val newX = x + (dominantIndividualAttractiveness * (dominant.coords[index].first - x) + alpha * random()).toFloat()
+            val newY = y + (dominantIndividualAttractiveness * (dominant.coords[index].second - y) + alpha * random()).toFloat()
+            recessive.coords[index] = Pair(newX, newY)
+        }
     }
 
     private fun generateInitialPopulation() {
@@ -29,9 +54,9 @@ class FireflyAlgorithm {
 
         (0 until populationSize).forEach {
             population.add(Individual(room))
-            val pieceWidth = 0
-            val pieceHeight = 0
         }
+
+        println(population[0])
     }
 
     private fun initRoom(): Room {
