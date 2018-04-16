@@ -2,7 +2,6 @@ package swarm
 
 import model.FurniturePiece
 import model.Room
-import evaluation.RastriginTest
 import evaluation.RoomConfigurationEvaluator
 import java.lang.Math.random
 import kotlin.math.exp
@@ -12,13 +11,13 @@ import kotlin.math.exp
  */
 class FireflyAlgorithm {
 
-    val alpha = 0.8
+    val alpha = 3.5
     val beta = 0.8
     val gamma = 0.001
 
-    val populationSize = 200
+    val populationSize = 100
     val furnitureCount = 5
-    val generationCount = 500
+    val generationCount = 1000
     val roomWidth = 150.0
     val roomHeight = 100.0
 
@@ -27,12 +26,13 @@ class FireflyAlgorithm {
 
     init {
         generateInitialPopulation()
+        evaluatePopulation()
     }
 
-    fun runOptimisation() {
-        evaluatePopulation()
+    fun runOptimisation(): Individual {
 
         var iteration = 0
+        var bestIndividualInAllGenerations = population[0]
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
@@ -43,9 +43,15 @@ class FireflyAlgorithm {
                     }
                 }
             }
-            collectStatistics()
+
+            val currentGenerationBestIntensityIndividual = assignIntensityAndReturnBestIndividual()
+            if (currentGenerationBestIntensityIndividual.intensity > bestIndividualInAllGenerations.intensity) {
+                bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
+            }
             iteration++
         }
+
+        return bestIndividualInAllGenerations
     }
 
     private fun generateInitialPopulation() {
@@ -98,17 +104,18 @@ class FireflyAlgorithm {
 //        println("Posterior intensity: ${individual.intensity}, prior intensity: $priorIntensity")
     }
 
-    fun collectStatistics() {
-        var bestScore = 0.0
+    fun assignIntensityAndReturnBestIndividual(): Individual {
+        var bestIntensity = -Double.MAX_VALUE
         var bestIndividual: Individual? = null
         population.forEach {
-            if (it.intensity > bestScore) {
-                bestScore = it.intensity
+            if (it.intensity > bestIntensity) {
+                bestIntensity = it.intensity
                 bestIndividual = it
             }
         }
 
         println(bestIndividual?.coords)
         println("Best score ${bestIndividual?.intensity}")
+        return bestIndividual!!
     }
 }

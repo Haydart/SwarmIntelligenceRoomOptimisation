@@ -34,11 +34,12 @@ class VisualizationWindow : Application() {
         initUI(primaryStage)
     }
 
-    fun updateRoomVis(color: Color) {
+    fun updateRoomVis(color: Color, sampleIndividual: Individual) {
         gAlgorithm?.let {
             val gc = roomGraphicContext
             drawRoomBounds(gc, it)
-            drawFurniturePieces(gc, it.population[0], color)
+//            drawFurniturePieces(gc, it.population[0], color)
+            drawFurniturePieces(gc, sampleIndividual, color)
             gc.fill = Color.RED
             gc.fillOval(0.0, 0.0, 15.0, 15.0)
         }
@@ -65,7 +66,9 @@ class VisualizationWindow : Application() {
 
         initButtonsPanelUI()
         initRoomVisUI()
-        updateRoomVis(Color.CORAL)
+        gAlgorithm?.let {
+            updateRoomVis(Color.CORAL, it.assignIntensityAndReturnBestIndividual())
+        }
 
         val scene = Scene(boardRoot, SCENE_WIDTH, SCENE_HEIGHT)
 
@@ -79,8 +82,8 @@ class VisualizationWindow : Application() {
 
         val startBtn = Button("Begin!")
         startBtn.setOnAction({
-            gAlgorithm?.runOptimisation()
-            updateRoomVis(Color.CORNFLOWERBLUE)
+            val globalBestIndividual = gAlgorithm?.runOptimisation()
+            updateRoomVis(Color.CORNFLOWERBLUE, globalBestIndividual!!)
         })
         buttonsPanel.children.add(startBtn)
 

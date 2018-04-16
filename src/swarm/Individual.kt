@@ -9,7 +9,7 @@ import kotlin.math.pow
  */
 class Individual(val room: Room) {
 
-    val coords: MutableList<Pair<Double, Double>> = mutableListOf()
+    var coords: MutableList<Pair<Double, Double>> = mutableListOf()
     var intensity = 0.0
 
     init {
@@ -31,16 +31,18 @@ class Individual(val room: Room) {
 
         return distance
     }
-//
-//    fun vectorTo(other: Individual) : MutableList<Pair<Float, Float>> {
-//        val result = mutableListOf<Pair<Float, Float>>()
-//        (0 until other.coords.size).forEach { index ->
-//            val vecX = other.coords[index].first - this.coords[index].first
-//            val vecY = other.coords[index].second - this.coords[index].second
-//            result.add(Pair(vecX, vecY))
-//        }
-//        return result
-//    }
+
+    fun deepCopy(): Individual {
+        val coordsCopy = mutableListOf<Pair<Double, Double>>()
+        coords.forEach { (x, y) ->
+            coordsCopy.add(Pair(x, y))
+        }
+
+        val result = Individual(room)
+        result.intensity = intensity
+        result.coords = coordsCopy
+        return result
+    }
 
     override fun toString(): String {
         return coords.toString()
