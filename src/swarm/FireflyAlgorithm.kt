@@ -1,5 +1,7 @@
 package swarm
 
+import evaluation.RastriginTest
+import evaluation.RestrictedRastriginTest
 import model.FurniturePiece
 import model.Room
 import evaluation.RoomConfigurationEvaluator
@@ -11,9 +13,9 @@ import kotlin.math.exp
  */
 class FireflyAlgorithm {
 
-    val alpha = 3.5
-    val beta = 0.8
-    val gamma = 0.001
+    val alpha = 0.05
+    val beta = 0.09
+    val gamma = 0.0001
 
     val populationSize = 100
     val furnitureCount = 5
@@ -22,7 +24,7 @@ class FireflyAlgorithm {
     val roomHeight = 100.0
 
     val population: MutableList<Individual> = mutableListOf()
-    val testFunction = RoomConfigurationEvaluator()
+    val testFunction = RestrictedRastriginTest()
 
     init {
         generateInitialPopulation()
