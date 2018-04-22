@@ -13,6 +13,7 @@ class BatIndividual(room: Room) : Individual(room){
             val x = 0.0
             val y = 0.0
 
+            velocity.add(Pair(x, y))
         }
     }
 

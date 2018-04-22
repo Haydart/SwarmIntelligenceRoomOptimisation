@@ -27,6 +27,7 @@ class BatAlgorithm {
     val randomFlyMax = 1.0
 
     val populationSize = 100
+    val generationCount = 10000
     val roomWidth = 150.0
     val roomHeight = 100.0
 
