@@ -6,7 +6,7 @@ class BatIndividual(room: Room) : Individual(room){
 
     var velocity: MutableList<Pair<Double, Double>> = mutableListOf()
     var r = Math.random()
-    var A = 1.0 + Math.random()
+    var A = 0.5
 
     init {
         room.furnitureList.forEach {

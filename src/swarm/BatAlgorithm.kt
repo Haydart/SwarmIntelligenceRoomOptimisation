@@ -11,7 +11,7 @@ import kotlin.math.exp
 class BatAlgorithm {
 
     val fMin = 0.0
-    val fMax = 10.0
+    val fMax = 2.0
 
     //val initAMin = 1.0
     //val initAMax = 2.0
@@ -23,16 +23,16 @@ class BatAlgorithm {
     //val rMin = 0.0
     //val rMax = 1.0
 
-    val randomFlyMin = 0.0
-    val randomFlyMax = 1.0
+    val randomFlyMin = 0.1
+    val randomFlyMax = 2.0
 
-    val populationSize = 100
-    val generationCount = 10000
+    val populationSize = 200
+    val generationCount = 2000
     val roomWidth = 150.0
     val roomHeight = 100.0
 
     val population: MutableList<BatIndividual> = mutableListOf()
-    val testFunction = RastriginTest()
+    val testFunction = RoomConfigurationEvaluator()
 
     init {
         generateInitialPopulation()
@@ -42,15 +42,17 @@ class BatAlgorithm {
     fun runOptimisation(): Individual {
 
         var iteration = 0
-        var bestIndividualInAllGenerations = population[0]
         var currentBestIndividual: BatIndividual = getBestIndividual()
+        var bestIndividualInAllGenerations = currentBestIndividual
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
-                updateBatVelocityAndPosition(population[i], currentBestIndividual)
+                updateBatVelocityAndPosition(population[i], bestIndividualInAllGenerations)
 
+                //println(population[i].r)
+                var avgA = calcAvgA()
                 if (Math.random() > population[i].r) {
-                    moveTowardsBest(population[i], currentBestIndividual)
+                    moveTowardsBest(population[i], bestIndividualInAllGenerations, avgA)
                 }
 
                 evaluateIndividual(population[i])
@@ -63,7 +65,7 @@ class BatAlgorithm {
                     if (newPotentialSolution.intensity > currentBestIndividual.intensity) {
                         population[i] = newPotentialSolution
                         population[i].A = population[i].A * alpha
-                        population[i].r = population[i].r * (1 - Math.exp(-gamma * iteration)) // not sure about this!!!
+                        population[i].r = population[i].r * (1 - Math.exp(-gamma * iteration))
                     }
                 }
             }
@@ -77,6 +79,14 @@ class BatAlgorithm {
         }
 
         return bestIndividualInAllGenerations
+    }
+
+    private fun calcAvgA(): Double {
+        var result = 0.0
+        population.forEach {
+            result += it.A
+        }
+        return result / populationSize.toDouble()
     }
 
     private fun generateInitialPopulation() {
@@ -131,10 +141,10 @@ class BatAlgorithm {
         }
     }
 
-    private fun moveTowardsBest(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual) {
+    private fun moveTowardsBest(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual, avgA: Double) {
         currentBat.coords.forEachIndexed { index, (x, y) ->
-            val newX = x + (Math.random() * 2.0 - 1.0) * currentGlobalBestBat.A
-            val newY = y + (Math.random() * 2.0 - 1.0) * currentGlobalBestBat.A
+            val newX = currentGlobalBestBat.coords[index].first + (Math.random() * 2.0 - 1.0) * avgA
+            val newY = currentGlobalBestBat.coords[index].second + (Math.random() * 2.0 - 1.0) * avgA
 
             currentBat.coords[index] = Pair(newX, newY)
         }
