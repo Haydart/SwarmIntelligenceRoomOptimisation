@@ -10,8 +10,8 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
-import swarm.FireflyAlgorithm
 import swarm.Individual
+import swarm.SwarmAlgorithm
 
 
 /**
@@ -45,7 +45,7 @@ class VisualizationWindow : Application() {
         }
     }
 
-    private fun drawRoomBounds(gc: GraphicsContext, it: FireflyAlgorithm) {
+    private fun drawRoomBounds(gc: GraphicsContext, it: SwarmAlgorithm) {
         gc.stroke = Color.BLACK
         gc.lineWidth = 4.0
         gc.strokeRect(0.0, 0.0, it.roomWidth, it.roomHeight)
@@ -67,7 +67,7 @@ class VisualizationWindow : Application() {
         initButtonsPanelUI()
         initRoomVisUI()
         gAlgorithm?.let {
-            updateRoomVis(Color.CORAL, it.assignIntensityAndReturnBestIndividual())
+            updateRoomVis(Color.CORAL, it.getBestIndividual())
         }
 
         val scene = Scene(boardRoot, SCENE_WIDTH, SCENE_HEIGHT)

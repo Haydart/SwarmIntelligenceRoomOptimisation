@@ -11,27 +11,24 @@ import kotlin.math.exp
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
-class FireflyAlgorithm {
+class FireflyAlgorithm : SwarmAlgorithm() {
 
     val alpha = 0.05
     val beta = 0.09
     val gamma = 0.0001
 
     val populationSize = 100
-    val furnitureCount = 5
     val generationCount = 1000
-    val roomWidth = 150.0
-    val roomHeight = 100.0
 
     val population: MutableList<Individual> = mutableListOf()
-    val testFunction = RestrictedRastriginTest()
+    val testFunction = RoomConfigurationEvaluator()
 
     init {
         generateInitialPopulation()
         evaluatePopulation()
     }
 
-    fun runOptimisation(): Individual {
+    override fun runOptimisation(): Individual {
 
         var iteration = 0
         var bestIndividualInAllGenerations = population[0]
@@ -46,7 +43,7 @@ class FireflyAlgorithm {
                 }
             }
 
-            val currentGenerationBestIntensityIndividual = assignIntensityAndReturnBestIndividual()
+            val currentGenerationBestIntensityIndividual = getBestIndividual()
             if (currentGenerationBestIntensityIndividual.intensity > bestIndividualInAllGenerations.intensity) {
                 bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
             }
@@ -106,18 +103,7 @@ class FireflyAlgorithm {
 //        println("Posterior intensity: ${individual.intensity}, prior intensity: $priorIntensity")
     }
 
-    fun assignIntensityAndReturnBestIndividual(): Individual {
-        var bestIntensity = -Double.MAX_VALUE
-        var bestIndividual: Individual? = null
-        population.forEach {
-            if (it.intensity > bestIntensity) {
-                bestIntensity = it.intensity
-                bestIndividual = it
-            }
-        }
-
-        println(bestIndividual?.coords)
-        println("Best score ${bestIndividual?.intensity}")
-        return bestIndividual!!
+    override fun getBestIndividual(): Individual {
+        return population.maxBy { it.intensity }!!
     }
 }

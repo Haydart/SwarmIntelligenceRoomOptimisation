@@ -26,8 +26,6 @@ class BatAlgorithm : SwarmAlgorithm(){
 
     val populationSize = 200
     val generationCount = 2000
-    val roomWidth = 150.0
-    val roomHeight = 100.0
 
     val population: MutableList<BatIndividual> = mutableListOf()
     val testFunction = RoomConfigurationEvaluator()
@@ -37,7 +35,7 @@ class BatAlgorithm : SwarmAlgorithm(){
         evaluatePopulation()
     }
 
-    fun runOptimisation(): Individual {
+    override fun runOptimisation(): Individual {
 
         var iteration = 0
         var currentBestIndividual: BatIndividual = getBestIndividual()
@@ -158,7 +156,7 @@ class BatAlgorithm : SwarmAlgorithm(){
         individual.intensity = 1 / testFunction.evaluateIndividual(individual)
     }
 
-    fun getBestIndividual(): BatIndividual {
+    override fun getBestIndividual(): BatIndividual {
         return population.maxBy { it.intensity }!!
     }
 }
