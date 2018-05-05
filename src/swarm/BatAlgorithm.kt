@@ -5,10 +5,8 @@ import evaluation.RestrictedRastriginTest
 import model.FurniturePiece
 import model.Room
 import evaluation.RoomConfigurationEvaluator
-import java.lang.Math.random
-import kotlin.math.exp
 
-class BatAlgorithm {
+class BatAlgorithm : SwarmAlgorithm(){
 
     val fMin = 0.0
     val fMax = 2.0
@@ -49,8 +47,7 @@ class BatAlgorithm {
             (0 until populationSize).forEach { i ->
                 updateBatVelocityAndPosition(population[i], bestIndividualInAllGenerations)
 
-                //println(population[i].r)
-                var avgA = calcAvgA()
+                val avgA = calcAvgA()
                 if (Math.random() > population[i].r) {
                     moveTowardsBest(population[i], bestIndividualInAllGenerations, avgA)
                 }
