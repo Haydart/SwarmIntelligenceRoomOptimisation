@@ -33,7 +33,7 @@ class BatAlgorithm : SwarmAlgorithm(){
         evaluatePopulation()
     }
 
-    override fun runOptimisation(): Individual {
+    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?): Individual {
 
         var iteration = 0
         var currentBestIndividual: BatIndividual = getBestIndividual()
@@ -69,6 +69,16 @@ class BatAlgorithm : SwarmAlgorithm(){
                 bestIndividualInAllGenerations = currentBestIndividual.deepCopy()
             }
             iteration++
+
+
+            // Update historical data
+            if (historyData != null) {
+                val currentIterationHistory = mutableListOf<Individual>()
+                population.forEach {
+                    currentIterationHistory.add(it.deepCopy())
+                }
+                historyData.add(currentIterationHistory)
+            }
         }
 
         return bestIndividualInAllGenerations

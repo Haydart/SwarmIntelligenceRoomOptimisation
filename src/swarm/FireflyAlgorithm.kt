@@ -26,7 +26,7 @@ class FireflyAlgorithm : SwarmAlgorithm() {
         evaluatePopulation()
     }
 
-    override fun runOptimisation(): Individual {
+    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?): Individual {
 
         var iteration = 0
         var bestIndividualInAllGenerations = population[0]

@@ -30,6 +30,8 @@ class VisualizationWindow : Application() {
     lateinit var boardRoot: BorderPane
     lateinit var roomGraphicContext: GraphicsContext
 
+    var lastHistoryData: MutableList<MutableList<Individual>> = mutableListOf()
+
     override fun start(primaryStage: Stage) {
         initUI(primaryStage)
     }
@@ -82,8 +84,10 @@ class VisualizationWindow : Application() {
 
         val startBtn = Button("Begin!")
         startBtn.setOnAction({
-            val globalBestIndividual = gAlgorithm?.runOptimisation()
+            lastHistoryData.clear()
+            val globalBestIndividual = gAlgorithm?.runOptimisation(lastHistoryData)
             updateRoomVis(Color.CORNFLOWERBLUE, globalBestIndividual!!)
+            print(lastHistoryData.size)
         })
         buttonsPanel.children.add(startBtn)
 
