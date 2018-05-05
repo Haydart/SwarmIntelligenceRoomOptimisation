@@ -2,8 +2,6 @@ package swarm
 
 import evaluation.RastriginTest
 import evaluation.RestrictedRastriginTest
-import model.FurniturePiece
-import model.Room
 import evaluation.RoomConfigurationEvaluator
 
 class BatAlgorithm : SwarmAlgorithm(){
@@ -94,22 +92,6 @@ class BatAlgorithm : SwarmAlgorithm(){
         println(population[0])
     }
 
-    private fun initRoom(): Room {
-        val furnitureList = mutableListOf<FurniturePiece>()
-        furnitureList.add(FurniturePiece(20.0, 15.0))
-        furnitureList.add(FurniturePiece(25.0, 10.0))
-        furnitureList.add(FurniturePiece(10.0, 5.0))
-        furnitureList.add(FurniturePiece(17.0, 12.0))
-        furnitureList.add(FurniturePiece(10.0, 10.0))
-        furnitureList.add(FurniturePiece(20.0, 5.0))
-        furnitureList.add(FurniturePiece(25.0, 10.0))
-        furnitureList.add(FurniturePiece(5.0, 15.0))
-        furnitureList.add(FurniturePiece(12.0, 17.0))
-        furnitureList.add(FurniturePiece(10.0, 25.0))
-
-        return Room(furnitureList, roomWidth, roomHeight)
-    }
-
     private fun updateBatVelocityAndPosition(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual) {
         val freq = fMin + (fMax - fMin) * Math.random()
         currentBat.velocity.forEachIndexed { index, (vx, vy) ->
@@ -137,7 +119,7 @@ class BatAlgorithm : SwarmAlgorithm(){
     }
 
     private fun moveTowardsBest(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual, avgA: Double) {
-        currentBat.coords.forEachIndexed { index, (x, y) ->
+        currentBat.coords.forEachIndexed { index, (_, _) ->
             val newX = currentGlobalBestBat.coords[index].first + (Math.random() * 2.0 - 1.0) * avgA
             val newY = currentGlobalBestBat.coords[index].second + (Math.random() * 2.0 - 1.0) * avgA
 
