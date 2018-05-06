@@ -1,5 +1,6 @@
 package swarm
 
+import evaluation.GenerationStatistics
 import evaluation.RastriginTest
 import evaluation.RestrictedRastriginTest
 import evaluation.RoomConfigurationEvaluator
@@ -26,10 +27,13 @@ class FireflyAlgorithm : SwarmAlgorithm() {
         evaluatePopulation()
     }
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?): Individual {
+    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?,
+                                 lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
 
         var iteration = 0
         var bestIndividualInAllGenerations = population[0]
+
+        lastRunStatistics?.add(getPopulationStatistics(population, iteration))
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
@@ -45,6 +49,7 @@ class FireflyAlgorithm : SwarmAlgorithm() {
             if (currentGenerationBestIntensityIndividual.intensity > bestIndividualInAllGenerations.intensity) {
                 bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
             }
+
             iteration++
 
             // Update historical data
@@ -55,6 +60,8 @@ class FireflyAlgorithm : SwarmAlgorithm() {
                 }
                 historyData.add(currentIterationHistory)
             }
+
+            lastRunStatistics?.add(getPopulationStatistics(population, iteration))
         }
 
         return bestIndividualInAllGenerations

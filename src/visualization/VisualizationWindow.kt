@@ -1,8 +1,8 @@
 package visualization
 
+import evaluation.GenerationStatistics
 import gAlgorithm
 import javafx.application.Application
-import javafx.beans.value.ChangeListener
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
@@ -14,10 +14,6 @@ import javafx.scene.paint.Color
 import javafx.stage.Stage
 import swarm.Individual
 import swarm.SwarmAlgorithm
-import javafx.beans.value.ObservableValue
-
-
-
 
 /**
  * Created by r.makowiecki on 14/04/2018.
@@ -45,6 +41,7 @@ class VisualizationWindow : Application() {
     var initBestIndividual: Individual? = null
     var lastGlobalBestIndividual: Individual? = null
     var lastHistoryData: MutableList<MutableList<Individual>> = mutableListOf()
+    val lastRunStatistics: MutableList<GenerationStatistics> = mutableListOf()
 
     val furnitureColor: Color = Color.CORNFLOWERBLUE
     val initFurnitureColor: Color = Color.CORAL
@@ -66,7 +63,6 @@ class VisualizationWindow : Application() {
             }
 
             if (lastHistoryData.size >= currentHistoryFrame && currentHistoryFrame > 0) {
-                println(lastHistoryData.size)
                 val currentIterationData = lastHistoryData[currentHistoryFrame - 1]
                 (0 until HIST_IND_VIS_COUNT).forEach {i ->
                     drawRoomBounds(gc, it, (i / HIST_IND_IN_ROW) * it.roomWidth,
@@ -118,12 +114,14 @@ class VisualizationWindow : Application() {
         val startBtn = Button("Begin!")
         startBtn.setOnAction({
             lastHistoryData.clear()
-            lastGlobalBestIndividual = (gAlgorithm?.runOptimisation(lastHistoryData))!!.deepCopy()
+            lastRunStatistics.clear()
+            lastGlobalBestIndividual = (gAlgorithm?.runOptimisation(lastHistoryData, lastRunStatistics))!!.deepCopy()
             updateRoomVis()
             historySlider.max = lastHistoryData.size.toDouble()
             if (lastHistoryData.size  > 0) {
                 historySlider.majorTickUnit = (lastHistoryData.size / 50).toDouble()
             }
+            ChartWindow().drawChart(lastRunStatistics)
         })
         buttonsPanel.children.add(startBtn)
 

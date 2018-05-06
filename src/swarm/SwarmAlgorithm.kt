@@ -1,5 +1,6 @@
 package swarm
 
+import evaluation.GenerationStatistics
 import model.FurniturePiece
 import model.Room
 
@@ -8,7 +9,8 @@ abstract class SwarmAlgorithm {
     val roomWidth = 150.0
     val roomHeight = 100.0
 
-    abstract fun runOptimisation(historyData: MutableList<MutableList<Individual>>? = null): Individual
+    abstract fun runOptimisation(historyData: MutableList<MutableList<Individual>>? = null,
+                                 lastRunStatistics: MutableList<GenerationStatistics>? = null): Individual
 
     abstract fun getBestIndividual(): Individual
 
@@ -26,5 +28,24 @@ abstract class SwarmAlgorithm {
         furnitureList.add(FurniturePiece(10.0, 25.0))
 
         return Room(furnitureList, roomWidth, roomHeight)
+    }
+
+    fun getPopulationStatistics(population: MutableList<Individual>, generationNumber: Int): GenerationStatistics {
+        var best = population[0].intensity
+        var worst = population[0].intensity
+        var avg = 0.0
+
+        for (ind in population) {
+            if (ind.intensity > best) {
+                best = ind.intensity
+            }
+            if (ind.intensity < worst) {
+                worst = ind.intensity
+            }
+            avg += ind.intensity
+        }
+        avg /= population.size.toDouble()
+
+        return GenerationStatistics(best, worst, avg, generationNumber)
     }
 }

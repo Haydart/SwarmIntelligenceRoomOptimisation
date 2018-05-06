@@ -1,5 +1,6 @@
 package swarm
 
+import evaluation.GenerationStatistics
 import evaluation.RastriginTest
 import evaluation.RestrictedRastriginTest
 import evaluation.RoomConfigurationEvaluator
@@ -33,11 +34,14 @@ class BatAlgorithm : SwarmAlgorithm(){
         evaluatePopulation()
     }
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?): Individual {
+    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?,
+                                 lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
 
         var iteration = 0
         var currentBestIndividual: BatIndividual = getBestIndividual()
         var bestIndividualInAllGenerations = currentBestIndividual
+
+        lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
@@ -79,6 +83,8 @@ class BatAlgorithm : SwarmAlgorithm(){
                 }
                 historyData.add(currentIterationHistory)
             }
+
+            lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
         }
 
         return bestIndividualInAllGenerations
