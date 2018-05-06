@@ -1,9 +1,9 @@
-package swarm
+package swarm.bats
 
 import evaluation.GenerationStatistics
-import evaluation.RastriginTest
-import evaluation.RestrictedRastriginTest
 import evaluation.RoomConfigurationEvaluator
+import swarm.Individual
+import swarm.SwarmAlgorithm
 
 class BatAlgorithm : SwarmAlgorithm(){
 

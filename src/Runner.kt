@@ -1,5 +1,4 @@
-import swarm.BatAlgorithm
-import swarm.FireflyAlgorithm
+import swarm.fireflies.FireflyAlgorithm
 import swarm.SwarmAlgorithm
 import visualization.VisualizationWindow
 
