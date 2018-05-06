@@ -33,30 +33,30 @@ const val SLIDER_WIDTH = 1000.0
 
 class VisualizationWindow : Application() {
 
-    lateinit var boardRoot: BorderPane
-    lateinit var roomGraphicContext: GraphicsContext
-    lateinit var historySlider: Slider
-    var currentHistoryFrame: Int = 0
+    private lateinit var boardRoot: BorderPane
+    private lateinit var roomGraphicContext: GraphicsContext
+    private lateinit var generationHistorySlider: Slider
+    private var currentHistoryFrame: Int = 0
 
-    var initBestIndividual: Individual? = null
-    var lastGlobalBestIndividual: Individual? = null
-    var lastHistoryData: MutableList<MutableList<Individual>> = mutableListOf()
-    val lastRunStatistics: MutableList<GenerationStatistics> = mutableListOf()
+    private var initialBestIndividual: Individual? = null
+    private var lastGlobalBestIndividual: Individual? = null
+    private var lastHistoryData: MutableList<MutableList<Individual>> = mutableListOf()
+    private val lastRunStatistics: MutableList<GenerationStatistics> = mutableListOf()
 
-    val furnitureColor: Color = Color.CORNFLOWERBLUE
-    val initFurnitureColor: Color = Color.CORAL
+    private val furnitureColor: Color = Color.CORNFLOWERBLUE
+    private val initFurnitureColor: Color = Color.CORAL
 
     override fun start(primaryStage: Stage) {
         initUI(primaryStage)
     }
 
-    fun updateRoomVis() {
+    private fun updateRoomVisualization() {
         gAlgorithm?.let {
             val gc = roomGraphicContext
             gc.clearRect(0.0, 0.0, CANVAS_WIDTH, CANVAS_HEIGHT)
             drawRoomBounds(gc, it, 0.0, 0.0)
-            if (initBestIndividual != null) {
-                drawFurniturePieces(gc, initBestIndividual!!, initFurnitureColor, 0.0, 0.0)
+            if (initialBestIndividual != null) {
+                drawFurniturePieces(gc, initialBestIndividual!!, initFurnitureColor, 0.0, 0.0)
             }
             if (lastGlobalBestIndividual != null) {
                 drawFurniturePieces(gc, lastGlobalBestIndividual!!, furnitureColor, 0.0, 0.0)
@@ -64,7 +64,7 @@ class VisualizationWindow : Application() {
 
             if (lastHistoryData.size >= currentHistoryFrame && currentHistoryFrame > 0) {
                 val currentIterationData = lastHistoryData[currentHistoryFrame - 1]
-                (0 until HIST_IND_VIS_COUNT).forEach {i ->
+                (0 until HIST_IND_VIS_COUNT).forEach { i ->
                     drawRoomBounds(gc, it, (i / HIST_IND_IN_ROW) * it.roomWidth,
                             (i % HIST_IND_IN_COL + 1) * it.roomHeight)
                     drawFurniturePieces(gc, currentIterationData[i], furnitureColor, (i / HIST_IND_IN_ROW) * it.roomWidth,
@@ -86,19 +86,19 @@ class VisualizationWindow : Application() {
         individual.coords.forEachIndexed { index, (x, y) ->
             val furniturePiece = individual.room.furnitureList[index]
             gc.strokeRect(x - furniturePiece.width / 2 + offsetX, y - furniturePiece.height / 2 + offsetY,
-                    furniturePiece.width,  furniturePiece.height)
+                    furniturePiece.width, furniturePiece.height)
         }
     }
 
-    fun initUI(stage: Stage) {
+    private fun initUI(stage: Stage) {
 
         boardRoot = BorderPane()
 
         initButtonsPanelUI()
         initRoomVisUI()
         gAlgorithm?.let {
-            initBestIndividual = it.getBestIndividual().deepCopy()
-            updateRoomVis()
+            initialBestIndividual = it.getBestIndividual().deepCopy()
+            updateRoomVisualization()
         }
 
         val scene = Scene(boardRoot, SCENE_WIDTH, SCENE_HEIGHT)
@@ -116,28 +116,28 @@ class VisualizationWindow : Application() {
             lastHistoryData.clear()
             lastRunStatistics.clear()
             lastGlobalBestIndividual = (gAlgorithm?.runOptimisation(lastHistoryData, lastRunStatistics))!!.deepCopy()
-            updateRoomVis()
-            historySlider.max = lastHistoryData.size.toDouble()
-            if (lastHistoryData.size  > 0) {
-                historySlider.majorTickUnit = (lastHistoryData.size / 50).toDouble()
+            updateRoomVisualization()
+            generationHistorySlider.max = lastHistoryData.size.toDouble()
+            if (lastHistoryData.size > 0) {
+                generationHistorySlider.majorTickUnit = (lastHistoryData.size / 50).toDouble()
             }
             ChartWindow().drawChart(lastRunStatistics)
         })
         buttonsPanel.children.add(startBtn)
 
-        historySlider = Slider(0.0, 0.0, 0.0)
-        historySlider.isShowTickLabels = true
-        historySlider.isShowTickMarks = true
-        //historySlider.isSnapToTicks = true
-        historySlider.prefWidth = SLIDER_WIDTH
+        generationHistorySlider = Slider(0.0, 0.0, 0.0)
+        generationHistorySlider.isShowTickLabels = true
+        generationHistorySlider.isShowTickMarks = true
+        //generationHistorySlider.isSnapToTicks = true
+        generationHistorySlider.prefWidth = SLIDER_WIDTH
 
-        historySlider.valueProperty().addListener({ _, _, new_val ->
+        generationHistorySlider.valueProperty().addListener({ _, _, new_val ->
             if (new_val.toInt() != currentHistoryFrame) {
                 currentHistoryFrame = new_val.toInt()
-                updateRoomVis()
+                updateRoomVisualization()
             }
         })
-        buttonsPanel.children.add(historySlider)
+        buttonsPanel.children.add(generationHistorySlider)
 
         boardRoot.top = buttonsPanel
     }

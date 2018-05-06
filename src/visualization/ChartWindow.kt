@@ -26,21 +26,21 @@ class ChartWindow {
 
         //worst
         val seriesWorst = XYChart.Series<Number, Number>()
-        seriesWorst.setName("Worst result")
+        seriesWorst.name = "Worst result"
 
         //avg
         val seriesAvg = XYChart.Series<Number, Number>()
-        seriesAvg.setName("Avg result")
+        seriesAvg.name = "Avg result"
 
         // best
         val seriesBest = XYChart.Series<Number, Number>()
-        seriesBest.setName("Best result")
+        seriesBest.name = "Best result"
 
-        // datas
+        // data
         for (s in statistics) {
-            seriesWorst.getData().add(XYChart.Data(s.generationNumber, s.worst))
-            seriesAvg.getData().add(XYChart.Data(s.generationNumber, s.avg))
-            seriesBest.getData().add(XYChart.Data(s.generationNumber, s.best))
+            seriesWorst.data.add(XYChart.Data(s.generationNumber, s.worst))
+            seriesAvg.data.add(XYChart.Data(s.generationNumber, s.avg))
+            seriesBest.data.add(XYChart.Data(s.generationNumber, s.best))
         }
 
         val scene = Scene(lineChart, 800.0, 600.0)
