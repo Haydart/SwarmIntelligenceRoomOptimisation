@@ -10,7 +10,7 @@ import visualization.VisualizationWindow
 var gAlgorithm: SwarmAlgorithm? = null
 
 fun main(args: Array<String>) {
-    gAlgorithm = BatAlgorithm()
+    gAlgorithm = FireflyAlgorithm()
     val visWindow = VisualizationWindow()
     visWindow.launchWindow(args)
 }

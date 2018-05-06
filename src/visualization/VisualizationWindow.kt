@@ -33,6 +33,8 @@ const val HIST_IND_VIS_COUNT = 40
 const val HIST_IND_IN_ROW = 5
 const val HIST_IND_IN_COL = 5
 
+const val SLIDER_WIDTH = 1000.0
+
 class VisualizationWindow : Application() {
 
     lateinit var boardRoot: BorderPane
@@ -99,7 +101,7 @@ class VisualizationWindow : Application() {
         initButtonsPanelUI()
         initRoomVisUI()
         gAlgorithm?.let {
-            initBestIndividual = it.getBestIndividual()
+            initBestIndividual = it.getBestIndividual().deepCopy()
             updateRoomVis()
         }
 
@@ -116,7 +118,7 @@ class VisualizationWindow : Application() {
         val startBtn = Button("Begin!")
         startBtn.setOnAction({
             lastHistoryData.clear()
-            lastGlobalBestIndividual = gAlgorithm?.runOptimisation(lastHistoryData)
+            lastGlobalBestIndividual = (gAlgorithm?.runOptimisation(lastHistoryData))!!.deepCopy()
             updateRoomVis()
             historySlider.max = lastHistoryData.size.toDouble()
             if (lastHistoryData.size  > 0) {
@@ -129,7 +131,7 @@ class VisualizationWindow : Application() {
         historySlider.isShowTickLabels = true
         historySlider.isShowTickMarks = true
         //historySlider.isSnapToTicks = true
-        historySlider.prefWidth = 500.0
+        historySlider.prefWidth = SLIDER_WIDTH
 
         historySlider.valueProperty().addListener({ _, _, new_val ->
             if (new_val.toInt() != currentHistoryFrame) {

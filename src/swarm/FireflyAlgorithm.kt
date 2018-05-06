@@ -46,6 +46,15 @@ class FireflyAlgorithm : SwarmAlgorithm() {
                 bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
             }
             iteration++
+
+            // Update historical data
+            if (historyData != null) {
+                val currentIterationHistory = mutableListOf<Individual>()
+                population.forEach {
+                    currentIterationHistory.add(it.deepCopy())
+                }
+                historyData.add(currentIterationHistory)
+            }
         }
 
         return bestIndividualInAllGenerations
