@@ -2,16 +2,21 @@ package visualization
 
 import gAlgorithm
 import javafx.application.Application
+import javafx.beans.value.ChangeListener
 import javafx.scene.Scene
 import javafx.scene.canvas.Canvas
 import javafx.scene.canvas.GraphicsContext
 import javafx.scene.control.Button
+import javafx.scene.control.Slider
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import swarm.Individual
 import swarm.SwarmAlgorithm
+import javafx.beans.value.ObservableValue
+
+
 
 
 /**
@@ -32,29 +37,39 @@ class VisualizationWindow : Application() {
 
     lateinit var boardRoot: BorderPane
     lateinit var roomGraphicContext: GraphicsContext
+    lateinit var historySlider: Slider
+    var currentHistoryFrame: Int = 0
 
+    var initBestIndividual: Individual? = null
+    var lastGlobalBestIndividual: Individual? = null
     var lastHistoryData: MutableList<MutableList<Individual>> = mutableListOf()
+
+    val furnitureColor: Color = Color.CORNFLOWERBLUE
+    val initFurnitureColor: Color = Color.CORAL
 
     override fun start(primaryStage: Stage) {
         initUI(primaryStage)
     }
 
-    fun updateRoomVis(color: Color, sampleIndividual: Individual, historyData: MutableList<MutableList<Individual>>? = null) {
+    fun updateRoomVis() {
         gAlgorithm?.let {
             val gc = roomGraphicContext
+            gc.clearRect(0.0, 0.0, CANVAS_WIDTH, CANVAS_HEIGHT)
             drawRoomBounds(gc, it, 0.0, 0.0)
-//            drawFurniturePieces(gc, it.population[0], color)
-            drawFurniturePieces(gc, sampleIndividual, color, 0.0, 0.0)
-//            gc.fill = Color.RED
-//            gc.fillOval(0.0, 0.0, 15.0, 15.0)
+            if (initBestIndividual != null) {
+                drawFurniturePieces(gc, initBestIndividual!!, initFurnitureColor, 0.0, 0.0)
+            }
+            if (lastGlobalBestIndividual != null) {
+                drawFurniturePieces(gc, lastGlobalBestIndividual!!, furnitureColor, 0.0, 0.0)
+            }
 
-            if (historyData != null && historyData.isNotEmpty()) {
-                val lastIterationData = historyData.last()
-
+            if (lastHistoryData.size >= currentHistoryFrame && currentHistoryFrame > 0) {
+                println(lastHistoryData.size)
+                val currentIterationData = lastHistoryData[currentHistoryFrame - 1]
                 (0 until HIST_IND_VIS_COUNT).forEach {i ->
                     drawRoomBounds(gc, it, (i / HIST_IND_IN_ROW) * it.roomWidth,
                             (i % HIST_IND_IN_COL + 1) * it.roomHeight)
-                    drawFurniturePieces(gc, lastIterationData[i], color, (i / HIST_IND_IN_ROW) * it.roomWidth,
+                    drawFurniturePieces(gc, currentIterationData[i], furnitureColor, (i / HIST_IND_IN_ROW) * it.roomWidth,
                             (i % HIST_IND_IN_COL + 1) * it.roomHeight)
                 }
             }
@@ -84,7 +99,8 @@ class VisualizationWindow : Application() {
         initButtonsPanelUI()
         initRoomVisUI()
         gAlgorithm?.let {
-            updateRoomVis(Color.CORAL, it.getBestIndividual())
+            initBestIndividual = it.getBestIndividual()
+            updateRoomVis()
         }
 
         val scene = Scene(boardRoot, SCENE_WIDTH, SCENE_HEIGHT)
@@ -100,11 +116,28 @@ class VisualizationWindow : Application() {
         val startBtn = Button("Begin!")
         startBtn.setOnAction({
             lastHistoryData.clear()
-            val globalBestIndividual = gAlgorithm?.runOptimisation(lastHistoryData)
-            updateRoomVis(Color.CORNFLOWERBLUE, globalBestIndividual!!, lastHistoryData)
-            print(lastHistoryData.size)
+            lastGlobalBestIndividual = gAlgorithm?.runOptimisation(lastHistoryData)
+            updateRoomVis()
+            historySlider.max = lastHistoryData.size.toDouble()
+            if (lastHistoryData.size  > 0) {
+                historySlider.majorTickUnit = (lastHistoryData.size / 50).toDouble()
+            }
         })
         buttonsPanel.children.add(startBtn)
+
+        historySlider = Slider(0.0, 0.0, 0.0)
+        historySlider.isShowTickLabels = true
+        historySlider.isShowTickMarks = true
+        //historySlider.isSnapToTicks = true
+        historySlider.prefWidth = 500.0
+
+        historySlider.valueProperty().addListener({ _, _, new_val ->
+            if (new_val.toInt() != currentHistoryFrame) {
+                currentHistoryFrame = new_val.toInt()
+                updateRoomVis()
+            }
+        })
+        buttonsPanel.children.add(historySlider)
 
         boardRoot.top = buttonsPanel
     }
