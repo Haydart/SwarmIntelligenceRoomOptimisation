@@ -16,8 +16,9 @@ abstract class SwarmAlgorithm(
     val roomWidth = 150.0
     val roomHeight = 100.0
 
+    private val testFunction = RoomConfigurationEvaluator()
+
     abstract val population: MutableList<out Individual>
-    protected val testFunction = RoomConfigurationEvaluator()
 
     abstract fun generateInitialPopulation()
 

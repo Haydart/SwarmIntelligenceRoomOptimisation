@@ -29,6 +29,16 @@ class BatAlgorithm : SwarmAlgorithm() {
         evaluatePopulation()
     }
 
+    override fun generateInitialPopulation() {
+        val room = initRoom()
+
+        (0 until populationSize).forEach {
+            population.add(BatIndividual(room))
+        }
+
+        println(population[0])
+    }
+
     override fun runOptimisation(
             historyData: MutableList<MutableList<Individual>>?,
             lastRunStatistics: MutableList<GenerationStatistics>?
@@ -44,7 +54,7 @@ class BatAlgorithm : SwarmAlgorithm() {
             (0 until populationSize).forEach { i ->
                 updateBatVelocityAndPosition(population[i], bestIndividualInAllGenerations)
 
-                val avgA = calcAvgA()
+                val avgA = calculateAverageA()
                 if (Math.random() > population[i].r) {
                     moveTowardsBest(population[i], bestIndividualInAllGenerations, avgA)
                 }
@@ -87,22 +97,12 @@ class BatAlgorithm : SwarmAlgorithm() {
         return bestIndividualInAllGenerations
     }
 
-    private fun calcAvgA(): Double {
+    private fun calculateAverageA(): Double {
         var result = 0.0
         population.forEach {
             result += it.A
         }
         return result / populationSize.toDouble()
-    }
-
-    override fun generateInitialPopulation() {
-        val room = initRoom()
-
-        (0 until populationSize).forEach {
-            population.add(BatIndividual(room))
-        }
-
-        println(population[0])
     }
 
     private fun updateBatVelocityAndPosition(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual) {

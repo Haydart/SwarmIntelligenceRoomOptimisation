@@ -28,7 +28,6 @@ class FireflyAlgorithm : SwarmAlgorithm() {
         (0 until populationSize).forEach {
             population.add(FireflyIndividual(room))
         }
-        println(population[0])
     }
 
     override fun runOptimisation(

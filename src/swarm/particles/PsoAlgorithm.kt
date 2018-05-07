@@ -9,15 +9,29 @@ import swarm.SwarmAlgorithm
  */
 class PsoAlgorithm : SwarmAlgorithm() {
 
+    val swarmInertia = 1
+    val particlePersonalAcceleration = 2.0
+    val particleSocialAcceleration = 2.0
+
     override val population: MutableList<ParticleIndividual> = mutableListOf()
 
+    init {
+        generateInitialPopulation()
+        evaluatePopulation()
+    }
+
     override fun generateInitialPopulation() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val room = initRoom()
+
+        (0 until populationSize).forEach {
+            population.add(ParticleIndividual(room))
+        }
     }
 
     override fun runOptimisation(
             historyData: MutableList<MutableList<Individual>>?,
-            lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+            lastRunStatistics: MutableList<GenerationStatistics>?
+    ): Individual {
 
         var iterationCount = 0
         var bestIndividualInAllGenerations = population[0]
