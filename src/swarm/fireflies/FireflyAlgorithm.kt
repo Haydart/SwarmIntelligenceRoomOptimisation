@@ -1,6 +1,6 @@
 package swarm.fireflies
 
-import evaluation.GenerationStatistics
+import model.GenerationStatistics
 import swarm.Individual
 import swarm.SwarmAlgorithm
 import java.lang.Math.random

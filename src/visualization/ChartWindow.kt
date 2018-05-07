@@ -1,11 +1,11 @@
 package visualization
 
-import evaluation.GenerationStatistics
 import javafx.scene.Scene
 import javafx.scene.chart.LineChart
 import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.stage.Stage
+import model.GenerationStatistics
 
 private const val SCREEN_WIDTH = 800.0
 private const val SCREEN_HEIGHT = 600.0

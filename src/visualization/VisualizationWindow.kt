@@ -1,6 +1,5 @@
 package visualization
 
-import evaluation.GenerationStatistics
 import gAlgorithm
 import javafx.application.Application
 import javafx.scene.Scene
@@ -12,6 +11,7 @@ import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
+import model.GenerationStatistics
 import swarm.Individual
 import swarm.SwarmAlgorithm
 

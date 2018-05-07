@@ -1,22 +1,22 @@
 package swarm
 
-import evaluation.GenerationStatistics
-import evaluation.RoomConfigurationEvaluator
+import evaluation.EvaluationFunction
+import evaluation.RoomConfigurationEvaluationFunction
 import model.FurniturePiece
+import model.GenerationStatistics
 import model.Room
+import model.RoomObstacle
 
 private const val DEFAULT_POPULATION_SIZE = 100
 private const val DEFAULT_GENERATION_COUNT = 1000
 
 abstract class SwarmAlgorithm(
-        val populationSize: Int = DEFAULT_POPULATION_SIZE,
-        val generationCount: Int = DEFAULT_GENERATION_COUNT
+        private val testFunction: EvaluationFunction = RoomConfigurationEvaluationFunction(),
+        protected val populationSize: Int = DEFAULT_POPULATION_SIZE,
+        protected val generationCount: Int = DEFAULT_GENERATION_COUNT
 ) {
-
     val roomWidth = 150.0
     val roomHeight = 100.0
-
-    private val testFunction = RoomConfigurationEvaluator()
 
     abstract val population: MutableList<out Individual>
 
@@ -35,7 +35,16 @@ abstract class SwarmAlgorithm(
         furnitureList.add(FurniturePiece(12.0, 17.0))
         furnitureList.add(FurniturePiece(10.0, 25.0))
 
-        return Room(furnitureList, roomWidth, roomHeight)
+        val obstacleList = mutableListOf<RoomObstacle>()
+
+        if (testFunction is RoomConfigurationEvaluationFunction) {
+            obstacleList.add(RoomObstacle(width = 20.0, height = 20.0, x = 0.0, y = 0.0))
+            obstacleList.add(RoomObstacle(width = 10.0, height = 40.0, x = 0.0, y = 35.0))
+            obstacleList.add(RoomObstacle(width = 30.0, height = 10.0, x = 45.0, y = 140.0))
+            obstacleList.add(RoomObstacle(width = 25.0, height = 10.0, x = 100.0, y = 140.0))
+        }
+
+        return Room(furnitureList, obstacleList, roomWidth, roomHeight)
     }
 
     abstract fun runOptimisation(

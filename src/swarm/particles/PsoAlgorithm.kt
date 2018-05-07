@@ -1,6 +1,6 @@
 package swarm.particles
 
-import evaluation.GenerationStatistics
+import model.GenerationStatistics
 import swarm.Individual
 import swarm.SwarmAlgorithm
 

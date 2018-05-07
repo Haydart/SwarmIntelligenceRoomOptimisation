@@ -1,6 +1,6 @@
 package swarm.bats
 
-import evaluation.GenerationStatistics
+import model.GenerationStatistics
 import swarm.Individual
 import swarm.SwarmAlgorithm
 

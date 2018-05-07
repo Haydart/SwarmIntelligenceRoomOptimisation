@@ -10,9 +10,9 @@ import kotlin.math.pow
 
 const val PUNISHMENT_VALUE = 1000.0
 
-class RoomConfigurationEvaluator {
+class RoomConfigurationEvaluationFunction : EvaluationFunction() {
 
-    fun evaluateIndividual(individual: Individual): Double {
+    override fun evaluateIndividual(individual: Individual): Double {
         var result = 0.0001
         val furnitureCount = individual.coords.size
 
