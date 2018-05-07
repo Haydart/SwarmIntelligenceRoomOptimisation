@@ -1,6 +1,8 @@
 package swarm
 
 import evaluation.EvaluationFunction
+import evaluation.MIN_X_POSITION
+import evaluation.RestrictedRastriginTest
 import evaluation.RoomConfigurationEvaluationFunction
 import model.FurniturePiece
 import model.GenerationStatistics
@@ -43,6 +45,10 @@ abstract class SwarmAlgorithm(
             obstacleList.add(RoomObstacle(width = 30.0, height = 20.0, x = 15.0, y = 55.0))
             obstacleList.add(RoomObstacle(width = 35.0, height = 20.0, x = 40.0, y = 90.0))
             obstacleList.add(RoomObstacle(width = 25.0, height = 20.0, x = 100.0, y = 90.0))
+        }
+
+        if (testFunction is RestrictedRastriginTest) {
+            obstacleList.add(RoomObstacle(width = MIN_X_POSITION, height = roomHeight, x = MIN_X_POSITION / 2.0, y = roomHeight / 2.0))
         }
 
         return Room(furnitureList, obstacleList, roomWidth, roomHeight)

@@ -8,9 +8,9 @@ import kotlin.math.pow
 const val R_PUNISHMENT_VALUE = 500000.0
 const val MIN_X_POSITION = 100.0
 
-class RestrictedRastriginTest {
+class RestrictedRastriginTest : EvaluationFunction() {
 
-    fun evaluateIndividual(individual: Individual) : Double {
+    override fun evaluateIndividual(individual: Individual) : Double {
 
         var sumFactor = 10.0 * individual.coords.size * 2
         individual.coords.forEach { (x, y) ->
