@@ -7,6 +7,9 @@ import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.stage.Stage
 
+private const val SCREEN_WIDTH = 800.0
+private const val SCREEN_HEIGHT = 600.0
+
 class ChartWindow {
 
     lateinit var stage: Stage
@@ -43,7 +46,7 @@ class ChartWindow {
             seriesBest.data.add(XYChart.Data(s.generationNumber, s.best))
         }
 
-        val scene = Scene(lineChart, 800.0, 600.0)
+        val scene = Scene(lineChart, SCREEN_WIDTH, SCREEN_HEIGHT)
         lineChart.data.add(seriesWorst)
         lineChart.data.add(seriesAvg)
         lineChart.data.add(seriesBest)

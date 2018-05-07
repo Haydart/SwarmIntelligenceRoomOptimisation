@@ -51,7 +51,7 @@ class VisualizationWindow : Application() {
     }
 
     private fun updateRoomVisualization() {
-        gAlgorithm?.let {
+        gAlgorithm.let {
             val gc = roomGraphicContext
             gc.clearRect(0.0, 0.0, CANVAS_WIDTH, CANVAS_HEIGHT)
             drawRoomBounds(gc, it, 0.0, 0.0)
@@ -96,7 +96,7 @@ class VisualizationWindow : Application() {
 
         initButtonsPanelUI()
         initRoomVisUI()
-        gAlgorithm?.let {
+        gAlgorithm.let {
             initialBestIndividual = it.getBestIndividual().deepCopy()
             updateRoomVisualization()
         }
@@ -115,7 +115,7 @@ class VisualizationWindow : Application() {
         startBtn.setOnAction({
             lastHistoryData.clear()
             lastRunStatistics.clear()
-            lastGlobalBestIndividual = (gAlgorithm?.runOptimisation(lastHistoryData, lastRunStatistics))!!.deepCopy()
+            lastGlobalBestIndividual = (gAlgorithm.runOptimisation(lastHistoryData, lastRunStatistics)).deepCopy()
             updateRoomVisualization()
             generationHistorySlider.max = lastHistoryData.size.toDouble()
             if (lastHistoryData.size > 0) {

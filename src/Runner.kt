@@ -1,12 +1,12 @@
-import swarm.fireflies.FireflyAlgorithm
 import swarm.SwarmAlgorithm
+import swarm.fireflies.FireflyAlgorithm
 import visualization.VisualizationWindow
 
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
 
-var gAlgorithm: SwarmAlgorithm? = null
+lateinit var gAlgorithm: SwarmAlgorithm
 
 fun main(args: Array<String>) {
     gAlgorithm = FireflyAlgorithm()

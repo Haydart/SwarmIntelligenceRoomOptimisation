@@ -7,27 +7,27 @@ import swarm.SwarmAlgorithm
 
 class BatAlgorithm : SwarmAlgorithm(){
 
-    val fMin = 0.0
-    val fMax = 2.0
+    private val fMin = 0.0
+    private val fMax = 2.0
 
     //val initAMin = 1.0
     //val initAMax = 2.0
     val aMin = 0.0
 
-    val alpha = 0.9
-    val gamma = 0.9
+    private val alpha = 0.9
+    private val gamma = 0.9
 
     //val rMin = 0.0
     //val rMax = 1.0
 
-    val randomFlyMin = 0.1
-    val randomFlyMax = 2.0
+    private val randomFlyMin = 0.1
+    private val randomFlyMax = 2.0
 
-    val populationSize = 200
-    val generationCount = 2000
+    private val populationSize = 200
+    private val generationCount = 2000
 
-    val population: MutableList<BatIndividual> = mutableListOf()
-    val testFunction = RoomConfigurationEvaluator()
+    private val population: MutableList<BatIndividual> = mutableListOf()
+    private val testFunction = RoomConfigurationEvaluator()
 
     init {
         generateInitialPopulation()
@@ -143,14 +143,14 @@ class BatAlgorithm : SwarmAlgorithm(){
         }
     }
 
-    fun evaluatePopulation() {
+    private fun evaluatePopulation() {
         population.forEach {
             evaluateIndividual(it)
             println("Individual intensity: ${it.intensity}")
         }
     }
 
-    fun evaluateIndividual(individual: Individual) {
+    private fun evaluateIndividual(individual: Individual) {
         individual.intensity = 1 / testFunction.evaluateIndividual(individual)
     }
 
