@@ -46,22 +46,22 @@ abstract class SwarmAlgorithm(
     abstract fun getBestIndividual(): Individual
 
     fun getPopulationStatistics(population: MutableList<out Individual>, generationNumber: Int): GenerationStatistics {
-        var best = population[0].intensity
-        var worst = population[0].intensity
+        var bestIntensity = population[0].intensity
+        var worstIntensity = population[0].intensity
         var averageIntensity = 0.0
 
-        for (ind in population) {
-            if (ind.intensity > best) {
-                best = ind.intensity
+        for (individual in population) {
+            if (individual.intensity > bestIntensity) {
+                bestIntensity = individual.intensity
             }
-            if (ind.intensity < worst) {
-                worst = ind.intensity
+            if (individual.intensity < worstIntensity) {
+                worstIntensity = individual.intensity
             }
-            averageIntensity += ind.intensity
+            averageIntensity += individual.intensity
         }
         averageIntensity /= population.size.toDouble()
 
-        return GenerationStatistics(best, worst, averageIntensity, generationNumber)
+        return GenerationStatistics(bestIntensity, worstIntensity, averageIntensity, generationNumber)
     }
 
     protected fun evaluatePopulation() {

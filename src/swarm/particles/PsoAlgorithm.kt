@@ -36,14 +36,17 @@ class PsoAlgorithm(
     ): Individual {
 
         var iterationCount = 0
-        var bestIndividualInAllGenerations = population[0]
+        globalBest = population[0].deepCopy() as ParticleIndividual
 
         lastRunStatistics?.add(getPopulationStatistics(population, iterationCount))
 
         while (iterationCount < generationCount) {
-            (0 until populationSize).forEach { individualIndex ->
-                updateParticleVelocity(individualIndex)
-                updateParticlePosition(individualIndex)
+            (0 until populationSize).forEach { i ->
+                updateParticleVelocity(i)
+                updateParticlePosition(i)
+                evaluateIndividual(population[i])
+                updateParticlePersonalBestIfNeeded(i)
+                updateParticleGlobalBestIfNeeded(i)
             }
 
             iterationCount++
@@ -53,22 +56,47 @@ class PsoAlgorithm(
     }
 
     private fun updateParticleVelocity(individualIndex: Int) {
-        val i = individualIndex
         val currentVelocity = population[individualIndex].velocity
 
-        population[i].velocity = MutableList(currentVelocity.size) { dimensionIndex ->
+        population[individualIndex].velocity = MutableList(currentVelocity.size) { dimensionIndex ->
             val newXVelocity = swarmInertia * currentVelocity[dimensionIndex].first +
-                    particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].first - population[i].coords[dimensionIndex].first) +
-                    particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].first - population[i].coords[dimensionIndex].first)
+                    particlePersonalAcceleration * Math.random() *
+                            (population[individualIndex].personalBestCoords[dimensionIndex].first - population[individualIndex].coords[dimensionIndex].first) +
+                    particleSocialAcceleration * Math.random() *
+                            (globalBest.coords[dimensionIndex].first - population[individualIndex].coords[dimensionIndex].first)
+
             val newYVelocity = swarmInertia * currentVelocity[dimensionIndex].second +
-                    particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].second - population[i].coords[dimensionIndex].second) +
-                    particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].second - population[i].coords[dimensionIndex].second)
+                    particlePersonalAcceleration * Math.random() *
+                            (population[individualIndex].personalBestCoords[dimensionIndex].second - population[individualIndex].coords[dimensionIndex].second) +
+                    particleSocialAcceleration * Math.random() *
+                            (globalBest.coords[dimensionIndex].second - population[individualIndex].coords[dimensionIndex].second)
+
             Pair(newXVelocity, newYVelocity)
         }
     }
 
     private fun updateParticlePosition(individualIndex: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val currentVelocity = population[individualIndex].velocity
+        val currentPosition = population[individualIndex].coords
+
+        population[individualIndex].coords = MutableList(currentPosition.size) { dimensionIndex ->
+            val newXPosition = currentPosition[dimensionIndex].first + currentVelocity[dimensionIndex].first
+
+            val newYPosition = currentPosition[dimensionIndex].second + currentVelocity[dimensionIndex].second
+
+            Pair(newXPosition, newYPosition)
+        }
+    }
+
+    private fun updateParticlePersonalBestIfNeeded(i: Int) {
+        if (population[i].intensity > population[i].personalBestIntensity) {
+            population[i].personalBestIntensity = population[i].intensity
+            population[i].personalBestCoords = population[i].coords.
+        }
+    }
+
+    private fun updateParticleGlobalBestIfNeeded(i: Int) {
+
     }
 
     override fun getBestIndividual(): Individual {
