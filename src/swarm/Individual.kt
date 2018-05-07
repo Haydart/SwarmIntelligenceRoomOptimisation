@@ -35,7 +35,5 @@ abstract class Individual(val room: Room) {
 
     abstract fun deepCopy(): Individual
 
-    override fun toString(): String {
-        return coords.toString()
-    }
+    override fun toString() = coords.toString()
 }

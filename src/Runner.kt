@@ -1,5 +1,5 @@
 import swarm.SwarmAlgorithm
-import swarm.fireflies.FireflyAlgorithm
+import swarm.particles.PsoAlgorithm
 import visualization.VisualizationWindow
 
 /**
@@ -9,7 +9,7 @@ import visualization.VisualizationWindow
 lateinit var gAlgorithm: SwarmAlgorithm
 
 fun main(args: Array<String>) {
-    gAlgorithm = FireflyAlgorithm()
+    gAlgorithm = PsoAlgorithm()
     val visWindow = VisualizationWindow()
     visWindow.launchWindow(args)
 }

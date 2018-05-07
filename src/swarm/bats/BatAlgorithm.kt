@@ -4,23 +4,15 @@ import evaluation.GenerationStatistics
 import swarm.Individual
 import swarm.SwarmAlgorithm
 
-class BatAlgorithm : SwarmAlgorithm() {
+class BatAlgorithm(
+        private val fMin: Double = 0.0,
+        private val fMax: Double = 2.0,
+        private val alpha: Double = 0.9,
+        private val gamma: Double = 0.9,
+        private val randomFlyMin: Double = 0.1,
+        private val randomFlyMax: Double = 2.0
+) : SwarmAlgorithm() {
 
-    private val fMin = 0.0
-    private val fMax = 2.0
-
-    //val initAMin = 1.0
-    //val initAMax = 2.0
-    val aMin = 0.0
-
-    private val alpha = 0.9
-    private val gamma = 0.9
-
-    //val rMin = 0.0
-    //val rMax = 1.0
-
-    private val randomFlyMin = 0.1
-    private val randomFlyMax = 2.0
 
     override val population: MutableList<BatIndividual> = mutableListOf()
 

@@ -7,11 +7,13 @@ import swarm.SwarmAlgorithm
 /**
  * Created by r.makowiecki on 07/05/2018.
  */
-class PsoAlgorithm : SwarmAlgorithm() {
+class PsoAlgorithm(
+        private val swarmInertia: Double = 1.0,
+        private val particlePersonalAcceleration: Double = 2.0,
+        private val particleSocialAcceleration: Double = 2.0
+) : SwarmAlgorithm() {
 
-    val swarmInertia = 1
-    val particlePersonalAcceleration = 2.0
-    val particleSocialAcceleration = 2.0
+    lateinit var globalBest: ParticleIndividual
 
     override val population: MutableList<ParticleIndividual> = mutableListOf()
 
@@ -40,17 +42,16 @@ class PsoAlgorithm : SwarmAlgorithm() {
 
         while (iterationCount < generationCount) {
             (0 until populationSize).forEach { i ->
-
+                population[i].velocity = swarmInertia *
             }
 
             iterationCount++
         }
 
-
         return population[0]
     }
 
     override fun getBestIndividual(): Individual {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return population.maxBy { it.intensity }!!
     }
 }
