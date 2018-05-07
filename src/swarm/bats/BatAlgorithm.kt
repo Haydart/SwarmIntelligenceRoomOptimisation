@@ -1,6 +1,10 @@
 package swarm.bats
 
+import evaluation.EvaluationFunction
+import evaluation.RoomConfigurationEvaluationFunction
 import model.GenerationStatistics
+import swarm.DEFAULT_GENERATION_COUNT
+import swarm.DEFAULT_POPULATION_SIZE
 import swarm.Individual
 import swarm.SwarmAlgorithm
 
@@ -8,8 +12,14 @@ class BatAlgorithm(
         private val fMin: Double = 0.0,
         private val fMax: Double = 8.0,
         private val alpha: Double = 0.9,
-        private val gamma: Double = 0.9
-) : SwarmAlgorithm() {
+        private val gamma: Double = 0.9,
+        testFunction: EvaluationFunction = RoomConfigurationEvaluationFunction(),
+        populationSize: Int = DEFAULT_POPULATION_SIZE,
+        generationCount: Int = DEFAULT_GENERATION_COUNT,
+        hasObstacles: Boolean = false,
+        roomWidth: Double = 150.0,
+        roomHeight: Double = 100.0
+) : SwarmAlgorithm(testFunction, populationSize, generationCount, hasObstacles, roomWidth, roomHeight) {
 
 
     override val population: MutableList<BatIndividual> = mutableListOf()
@@ -60,8 +70,7 @@ class BatAlgorithm(
                 if (Math.random() < population[i].A && population[i].intensity > originalIntensivity) {
                     population[i].A = population[i].A * alpha
                     population[i].r = population[i].r * (1 - Math.exp(-gamma * iteration))
-                }
-                else {
+                } else {
                     // Revert
                     population[i].coords = originalCoords
                     population[i].intensity = originalIntensivity

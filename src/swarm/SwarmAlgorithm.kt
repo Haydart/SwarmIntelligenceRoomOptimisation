@@ -7,16 +7,17 @@ import model.GenerationStatistics
 import model.Room
 import model.RoomObstacle
 
-private const val DEFAULT_POPULATION_SIZE = 100
-private const val DEFAULT_GENERATION_COUNT = 1000
+const val DEFAULT_POPULATION_SIZE = 100
+const val DEFAULT_GENERATION_COUNT = 1000
 
 abstract class SwarmAlgorithm(
         private val testFunction: EvaluationFunction = RoomConfigurationEvaluationFunction(),
         protected val populationSize: Int = DEFAULT_POPULATION_SIZE,
-        protected val generationCount: Int = DEFAULT_GENERATION_COUNT
+        protected val generationCount: Int = DEFAULT_GENERATION_COUNT,
+        private val hasObstacles: Boolean = false,
+        val roomWidth: Double = 150.0,
+        val roomHeight: Double = 100.0
 ) {
-    val roomWidth = 150.0
-    val roomHeight = 100.0
 
     abstract val population: MutableList<out Individual>
 
@@ -37,7 +38,7 @@ abstract class SwarmAlgorithm(
 
         val obstacleList = mutableListOf<RoomObstacle>()
 
-        if (testFunction is RoomConfigurationEvaluationFunction) {
+        if (hasObstacles) {
             obstacleList.add(RoomObstacle(width = 36.0, height = 36.0, x = 18.0, y = 18.0))
             obstacleList.add(RoomObstacle(width = 30.0, height = 20.0, x = 15.0, y = 55.0))
             obstacleList.add(RoomObstacle(width = 35.0, height = 20.0, x = 40.0, y = 90.0))
