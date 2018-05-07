@@ -41,24 +41,34 @@ class PsoAlgorithm(
         lastRunStatistics?.add(getPopulationStatistics(population, iterationCount))
 
         while (iterationCount < generationCount) {
-            (0 until populationSize).forEach { i ->
-                val currentVelocity = population[i].velocity
-
-                population[i].velocity = MutableList(currentVelocity.size) { dimensionIndex ->
-                    val newXVelocity = swarmInertia * currentVelocity[dimensionIndex].first +
-                            particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].first - population[i].coords[dimensionIndex].first) +
-                            particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].first - population[i].coords[dimensionIndex].first)
-                    val newYVelocity = swarmInertia * currentVelocity[dimensionIndex].second +
-                            particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].second - population[i].coords[dimensionIndex].second) +
-                            particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].second - population[i].coords[dimensionIndex].second)
-                    Pair(newXVelocity, newYVelocity)
-                }
+            (0 until populationSize).forEach { individualIndex ->
+                updateParticleVelocity(individualIndex)
+                updateParticlePosition(individualIndex)
             }
 
             iterationCount++
         }
 
         return population[0]
+    }
+
+    private fun updateParticleVelocity(individualIndex: Int) {
+        val i = individualIndex
+        val currentVelocity = population[individualIndex].velocity
+
+        population[i].velocity = MutableList(currentVelocity.size) { dimensionIndex ->
+            val newXVelocity = swarmInertia * currentVelocity[dimensionIndex].first +
+                    particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].first - population[i].coords[dimensionIndex].first) +
+                    particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].first - population[i].coords[dimensionIndex].first)
+            val newYVelocity = swarmInertia * currentVelocity[dimensionIndex].second +
+                    particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].second - population[i].coords[dimensionIndex].second) +
+                    particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].second - population[i].coords[dimensionIndex].second)
+            Pair(newXVelocity, newYVelocity)
+        }
+    }
+
+    private fun updateParticlePosition(individualIndex: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getBestIndividual(): Individual {
