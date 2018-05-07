@@ -9,7 +9,9 @@ import swarm.SwarmAlgorithm
  */
 class PsoAlgorithm : SwarmAlgorithm() {
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?, lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+    override fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>?,
+            lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

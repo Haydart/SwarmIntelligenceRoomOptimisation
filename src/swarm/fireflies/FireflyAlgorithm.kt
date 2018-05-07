@@ -16,9 +16,6 @@ class FireflyAlgorithm : SwarmAlgorithm() {
     private val beta = 0.09
     private val gamma = 0.0001
 
-    private val populationSize = 100
-    private val generationCount = 1000
-
     private val population: MutableList<Individual> = mutableListOf()
     private val testFunction = RoomConfigurationEvaluator()
 

@@ -4,7 +4,13 @@ import evaluation.GenerationStatistics
 import model.FurniturePiece
 import model.Room
 
-abstract class SwarmAlgorithm {
+private const val DEFAULT_POPULATION_SIZE = 100
+private const val DEFAULT_GENERATION_COUNT = 1000
+
+abstract class SwarmAlgorithm(
+        val populationSize: Int = DEFAULT_POPULATION_SIZE,
+        val generationCount: Int = DEFAULT_GENERATION_COUNT
+) {
 
     val roomWidth = 150.0
     val roomHeight = 100.0

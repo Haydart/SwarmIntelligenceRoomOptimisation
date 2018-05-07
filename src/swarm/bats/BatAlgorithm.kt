@@ -23,9 +23,6 @@ class BatAlgorithm : SwarmAlgorithm(){
     private val randomFlyMin = 0.1
     private val randomFlyMax = 2.0
 
-    private val populationSize = 200
-    private val generationCount = 2000
-
     private val population: MutableList<BatIndividual> = mutableListOf()
     private val testFunction = RoomConfigurationEvaluator()
 
