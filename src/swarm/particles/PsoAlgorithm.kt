@@ -8,9 +8,9 @@ import swarm.SwarmAlgorithm
  * Created by r.makowiecki on 07/05/2018.
  */
 class PsoAlgorithm(
-        private val swarmInertia: Double = 1.0,
-        private val particlePersonalAcceleration: Double = 2.0,
-        private val particleSocialAcceleration: Double = 2.0
+        private val swarmInertia: Double = .8,
+        private val particlePersonalAcceleration: Double = 1.4,
+        private val particleSocialAcceleration: Double = 0.6
 ) : SwarmAlgorithm() {
 
     lateinit var globalBest: ParticleIndividual
@@ -46,13 +46,24 @@ class PsoAlgorithm(
                 updateParticlePosition(i)
                 evaluateIndividual(population[i])
                 updateParticlePersonalBestIfNeeded(i)
-                updateParticleGlobalBestIfNeeded(i)
+                updateGlobalBestIfNeeded(i)
             }
 
             iterationCount++
+
+            // Update historical data
+            if (historyData != null) {
+                val currentIterationHistory = mutableListOf<Individual>()
+                population.forEach {
+                    currentIterationHistory.add(it.deepCopy())
+                }
+                historyData.add(currentIterationHistory)
+            }
+
+            lastRunStatistics?.add(getPopulationStatistics(population, iterationCount))
         }
 
-        return population[0]
+        return globalBest
     }
 
     private fun updateParticleVelocity(individualIndex: Int) {
@@ -95,7 +106,7 @@ class PsoAlgorithm(
         }
     }
 
-    private fun updateParticleGlobalBestIfNeeded(index: Int) {
+    private fun updateGlobalBestIfNeeded(index: Int) {
         if (population[index].intensity > globalBest.intensity) {
             globalBest = population[index].deepCopy() as ParticleIndividual
         }
