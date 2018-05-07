@@ -19,12 +19,7 @@ abstract class SwarmAlgorithm(
     abstract val population: MutableList<out Individual>
     protected val testFunction = RoomConfigurationEvaluator()
 
-    abstract fun runOptimisation(
-            historyData: MutableList<MutableList<Individual>>? = null,
-            lastRunStatistics: MutableList<GenerationStatistics>? = null
-    ): Individual
-
-    abstract fun getBestIndividual(): Individual
+    abstract fun generateInitialPopulation()
 
     protected fun initRoom(): Room {
         val furnitureList = mutableListOf<FurniturePiece>()
@@ -42,10 +37,17 @@ abstract class SwarmAlgorithm(
         return Room(furnitureList, roomWidth, roomHeight)
     }
 
+    abstract fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>? = null,
+            lastRunStatistics: MutableList<GenerationStatistics>? = null
+    ): Individual
+
+    abstract fun getBestIndividual(): Individual
+
     fun getPopulationStatistics(population: MutableList<out Individual>, generationNumber: Int): GenerationStatistics {
         var best = population[0].intensity
         var worst = population[0].intensity
-        var avg = 0.0
+        var averageIntensity = 0.0
 
         for (ind in population) {
             if (ind.intensity > best) {
@@ -54,12 +56,21 @@ abstract class SwarmAlgorithm(
             if (ind.intensity < worst) {
                 worst = ind.intensity
             }
-            avg += ind.intensity
+            averageIntensity += ind.intensity
         }
-        avg /= population.size.toDouble()
+        averageIntensity /= population.size.toDouble()
 
-        return GenerationStatistics(best, worst, avg, generationNumber)
+        return GenerationStatistics(best, worst, averageIntensity, generationNumber)
     }
 
-    abstract fun generateInitialPopulation()
+    protected fun evaluatePopulation() {
+        population.forEach {
+            evaluateIndividual(it)
+            println("Individual intensity: ${it.intensity}")
+        }
+    }
+
+    protected fun evaluateIndividual(individual: Individual) {
+        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
+    }
 }

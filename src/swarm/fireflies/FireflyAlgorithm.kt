@@ -83,19 +83,6 @@ class FireflyAlgorithm : SwarmAlgorithm() {
         }
     }
 
-    private fun evaluatePopulation() {
-        population.forEach {
-            it.intensity = 1 / testFunction.evaluateIndividual(it)
-            println("Individual intensity: ${it.intensity}")
-        }
-    }
-
-    private fun evaluateIndividual(individual: Individual) {
-        val priorIntensity = individual.intensity
-        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
-//        println("Posterior intensity: ${individual.intensity}, prior intensity: $priorIntensity")
-    }
-
     override fun getBestIndividual(): Individual {
         return population.maxBy { it.intensity }!!
     }

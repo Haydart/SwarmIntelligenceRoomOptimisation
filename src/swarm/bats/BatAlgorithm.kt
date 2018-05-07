@@ -22,21 +22,23 @@ class BatAlgorithm : SwarmAlgorithm() {
     private val randomFlyMin = 0.1
     private val randomFlyMax = 2.0
 
-    private val population: MutableList<BatIndividual> = mutableListOf()
+    override val population: MutableList<BatIndividual> = mutableListOf()
 
     init {
         generateInitialPopulation()
         evaluatePopulation()
     }
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?,
-                                 lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+    override fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>?,
+            lastRunStatistics: MutableList<GenerationStatistics>?
+    ): Individual {
 
         var iteration = 0
         var currentBestIndividual: BatIndividual = getBestIndividual()
         var bestIndividualInAllGenerations = currentBestIndividual
 
-        lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
+        lastRunStatistics?.add(getPopulationStatistics(population, iteration))
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
@@ -79,7 +81,7 @@ class BatAlgorithm : SwarmAlgorithm() {
                 historyData.add(currentIterationHistory)
             }
 
-            lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
+            lastRunStatistics?.add(getPopulationStatistics(population, iteration))
         }
 
         return bestIndividualInAllGenerations
@@ -136,17 +138,6 @@ class BatAlgorithm : SwarmAlgorithm() {
 
             currentBat.coords[index] = Pair(newX, newY)
         }
-    }
-
-    private fun evaluatePopulation() {
-        population.forEach {
-            evaluateIndividual(it)
-            println("Individual intensity: ${it.intensity}")
-        }
-    }
-
-    private fun evaluateIndividual(individual: Individual) {
-        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
     }
 
     override fun getBestIndividual(): BatIndividual {
