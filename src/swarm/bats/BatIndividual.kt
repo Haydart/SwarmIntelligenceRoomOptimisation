@@ -1,6 +1,7 @@
-package swarm
+package swarm.bats
 
 import model.Room
+import swarm.Individual
 
 class BatIndividual(room: Room) : Individual(room){
 

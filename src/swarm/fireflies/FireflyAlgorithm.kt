@@ -1,41 +1,45 @@
-package swarm
+package swarm.fireflies
 
 import evaluation.GenerationStatistics
-import evaluation.RastriginTest
-import evaluation.RestrictedRastriginTest
-import evaluation.RoomConfigurationEvaluator
+import swarm.Individual
+import swarm.SwarmAlgorithm
 import java.lang.Math.random
 import kotlin.math.exp
 
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
-class FireflyAlgorithm : SwarmAlgorithm() {
+class FireflyAlgorithm(
+        private val alpha: Double = 0.05,
+        private val beta: Double = 0.09,
+        private val gamma: Double = 0.0001
+) : SwarmAlgorithm() {
 
-    val alpha = 0.05
-    val beta = 0.09
-    val gamma = 0.0001
-
-    val populationSize = 100
-    val generationCount = 1000
-
-    val population: MutableList<Individual> = mutableListOf()
-    val testFunction = RoomConfigurationEvaluator()
+    override val population: MutableList<FireflyIndividual> = mutableListOf()
 
     init {
         generateInitialPopulation()
         evaluatePopulation()
     }
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?,
-                                 lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+    override fun generateInitialPopulation() {
+        val room = initRoom()
 
-        var iteration = 0
+        (0 until populationSize).forEach {
+            population.add(FireflyIndividual(room))
+        }
+    }
+
+    override fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>?,
+            lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+
+        var iterationCount = 0
         var bestIndividualInAllGenerations = population[0]
 
-        lastRunStatistics?.add(getPopulationStatistics(population, iteration))
+        lastRunStatistics?.add(getPopulationStatistics(population, iterationCount))
 
-        while (iteration < generationCount) {
+        while (iterationCount < generationCount) {
             (0 until populationSize).forEach { i ->
                 (0 until populationSize).forEach { j ->
                     if (population[j].intensity > population[i].intensity) {
@@ -47,10 +51,10 @@ class FireflyAlgorithm : SwarmAlgorithm() {
 
             val currentGenerationBestIntensityIndividual = getBestIndividual()
             if (currentGenerationBestIntensityIndividual.intensity > bestIndividualInAllGenerations.intensity) {
-                bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
+                bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy() as FireflyIndividual
             }
 
-            iteration++
+            iterationCount++
 
             // Update historical data
             if (historyData != null) {
@@ -61,20 +65,10 @@ class FireflyAlgorithm : SwarmAlgorithm() {
                 historyData.add(currentIterationHistory)
             }
 
-            lastRunStatistics?.add(getPopulationStatistics(population, iteration))
+            lastRunStatistics?.add(getPopulationStatistics(population, iterationCount))
         }
 
         return bestIndividualInAllGenerations
-    }
-
-    private fun generateInitialPopulation() {
-        val room = initRoom()
-
-        (0 until populationSize).forEach {
-            population.add(Individual(room))
-        }
-
-        println(population[0])
     }
 
     private fun moveTowards(recessive: Individual, dominant: Individual) {
@@ -86,19 +80,6 @@ class FireflyAlgorithm : SwarmAlgorithm() {
             val newY = y + dominantIndividualAttractiveness * (dominant.coords[index].second - y) + alpha * (2 * random() - 1)
             recessive.coords[index] = Pair(newX, newY)
         }
-    }
-
-    fun evaluatePopulation() {
-        population.forEach {
-            it.intensity = 1 / testFunction.evaluateIndividual(it)
-            println("Individual intensity: ${it.intensity}")
-        }
-    }
-
-    fun evaluateIndividual(individual: Individual) {
-        val priorIntensity = individual.intensity
-        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
-//        println("Posterior intensity: ${individual.intensity}, prior intensity: $priorIntensity")
     }
 
     override fun getBestIndividual(): Individual {

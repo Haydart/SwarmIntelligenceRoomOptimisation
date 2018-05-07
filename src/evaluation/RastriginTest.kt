@@ -10,11 +10,11 @@ import kotlin.math.pow
  */
 class RastriginTest {
 
-    fun evaluateIndividual(individual: Individual) : Double {
+    fun evaluateIndividual(individual: Individual): Double {
 
         var sumFactor = 10.0 * individual.coords.size * 2
         individual.coords.forEach { (x, y) ->
-            sumFactor += (x.pow(2) + y.pow(2) - 10 * cos(2 * PI * x ) - 10 * cos(2 * PI * y)).toFloat()
+            sumFactor += (x.pow(2) + y.pow(2) - 10 * cos(2 * PI * x) - 10 * cos(2 * PI * y)).toFloat()
         }
         return sumFactor
     }

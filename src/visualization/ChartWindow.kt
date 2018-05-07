@@ -7,6 +7,9 @@ import javafx.scene.chart.NumberAxis
 import javafx.scene.chart.XYChart
 import javafx.stage.Stage
 
+private const val SCREEN_WIDTH = 800.0
+private const val SCREEN_HEIGHT = 600.0
+
 class ChartWindow {
 
     lateinit var stage: Stage
@@ -26,24 +29,24 @@ class ChartWindow {
 
         //worst
         val seriesWorst = XYChart.Series<Number, Number>()
-        seriesWorst.setName("Worst result")
+        seriesWorst.name = "Worst result"
 
         //avg
         val seriesAvg = XYChart.Series<Number, Number>()
-        seriesAvg.setName("Avg result")
+        seriesAvg.name = "Avg result"
 
         // best
         val seriesBest = XYChart.Series<Number, Number>()
-        seriesBest.setName("Best result")
+        seriesBest.name = "Best result"
 
-        // datas
+        // data
         for (s in statistics) {
-            seriesWorst.getData().add(XYChart.Data(s.generationNumber, s.worst))
-            seriesAvg.getData().add(XYChart.Data(s.generationNumber, s.avg))
-            seriesBest.getData().add(XYChart.Data(s.generationNumber, s.best))
+            seriesWorst.data.add(XYChart.Data(s.generationNumber, s.worst))
+            seriesAvg.data.add(XYChart.Data(s.generationNumber, s.avg))
+            seriesBest.data.add(XYChart.Data(s.generationNumber, s.best))
         }
 
-        val scene = Scene(lineChart, 800.0, 600.0)
+        val scene = Scene(lineChart, SCREEN_WIDTH, SCREEN_HEIGHT)
         lineChart.data.add(seriesWorst)
         lineChart.data.add(seriesAvg)
         lineChart.data.add(seriesBest)
