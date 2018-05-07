@@ -1,7 +1,6 @@
 package swarm.fireflies
 
 import evaluation.GenerationStatistics
-import evaluation.RoomConfigurationEvaluator
 import swarm.Individual
 import swarm.SwarmAlgorithm
 import java.lang.Math.random
@@ -16,12 +15,20 @@ class FireflyAlgorithm : SwarmAlgorithm() {
     private val beta = 0.09
     private val gamma = 0.0001
 
-    private val population: MutableList<Individual> = mutableListOf()
-    private val testFunction = RoomConfigurationEvaluator()
+    override val population: MutableList<FireflyIndividual> = mutableListOf()
 
     init {
         generateInitialPopulation()
         evaluatePopulation()
+    }
+
+    override fun generateInitialPopulation() {
+        val room = initRoom()
+
+        (0 until populationSize).forEach {
+            population.add(FireflyIndividual(room))
+        }
+        println(population[0])
     }
 
     override fun runOptimisation(
@@ -63,16 +70,6 @@ class FireflyAlgorithm : SwarmAlgorithm() {
         }
 
         return bestIndividualInAllGenerations
-    }
-
-    private fun generateInitialPopulation() {
-        val room = initRoom()
-
-        (0 until populationSize).forEach {
-            population.add(Individual(room))
-        }
-
-        println(population[0])
     }
 
     private fun moveTowards(recessive: Individual, dominant: Individual) {

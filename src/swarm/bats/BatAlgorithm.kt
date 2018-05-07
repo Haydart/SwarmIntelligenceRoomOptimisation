@@ -1,11 +1,10 @@
 package swarm.bats
 
 import evaluation.GenerationStatistics
-import evaluation.RoomConfigurationEvaluator
 import swarm.Individual
 import swarm.SwarmAlgorithm
 
-class BatAlgorithm : SwarmAlgorithm(){
+class BatAlgorithm : SwarmAlgorithm() {
 
     private val fMin = 0.0
     private val fMax = 2.0
@@ -24,7 +23,6 @@ class BatAlgorithm : SwarmAlgorithm(){
     private val randomFlyMax = 2.0
 
     private val population: MutableList<BatIndividual> = mutableListOf()
-    private val testFunction = RoomConfigurationEvaluator()
 
     init {
         generateInitialPopulation()
@@ -95,7 +93,7 @@ class BatAlgorithm : SwarmAlgorithm(){
         return result / populationSize.toDouble()
     }
 
-    private fun generateInitialPopulation() {
+    override fun generateInitialPopulation() {
         val room = initRoom()
 
         (0 until populationSize).forEach {
