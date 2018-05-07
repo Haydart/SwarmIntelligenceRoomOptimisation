@@ -42,7 +42,17 @@ class PsoAlgorithm(
 
         while (iterationCount < generationCount) {
             (0 until populationSize).forEach { i ->
-                population[i].velocity = swarmInertia *
+                val currentVelocity = population[i].velocity
+
+                population[i].velocity = MutableList(currentVelocity.size) { dimensionIndex ->
+                    val newXVelocity = swarmInertia * currentVelocity[dimensionIndex].first +
+                            particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].first - population[i].coords[dimensionIndex].first) +
+                            particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].first - population[i].coords[dimensionIndex].first)
+                    val newYVelocity = swarmInertia * currentVelocity[dimensionIndex].second +
+                            particlePersonalAcceleration * Math.random() * (population[i].personalBestCoords[dimensionIndex].second - population[i].coords[dimensionIndex].second) +
+                            particleSocialAcceleration * Math.random() * (globalBest.coords[dimensionIndex].second - population[i].coords[dimensionIndex].second)
+                    Pair(newXVelocity, newYVelocity)
+                }
             }
 
             iterationCount++
