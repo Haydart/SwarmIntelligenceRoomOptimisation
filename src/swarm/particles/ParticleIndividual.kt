@@ -5,4 +5,8 @@ import swarm.Individual
 
 class ParticleIndividual(room: Room) : Individual(room) {
 
+    override fun deepCopy(): Individual {
+        //no-op
+        return this
+    }
 }

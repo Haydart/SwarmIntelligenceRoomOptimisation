@@ -1,7 +1,6 @@
 package swarm
 
 import model.Room
-import swarm.fireflies.FireflyIndividual
 import java.lang.Math.random
 import kotlin.math.pow
 
@@ -34,17 +33,7 @@ abstract class Individual(val room: Room) {
         return distance
     }
 
-    fun deepCopy(): Individual {
-        val coordsCopy = mutableListOf<Pair<Double, Double>>()
-        coords.forEach { (x, y) ->
-            coordsCopy.add(Pair(x, y))
-        }
-
-        val result = FireflyIndividual(room)
-        result.intensity = intensity
-        result.coords = coordsCopy
-        return result
-    }
+    abstract fun deepCopy(): Individual
 
     override fun toString(): String {
         return coords.toString()

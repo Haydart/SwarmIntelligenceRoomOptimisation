@@ -31,6 +31,9 @@ class PsoAlgorithm : SwarmAlgorithm() {
 
             iterationCount++
         }
+
+
+        return population[0]
     }
 
     override fun getBestIndividual(): Individual {

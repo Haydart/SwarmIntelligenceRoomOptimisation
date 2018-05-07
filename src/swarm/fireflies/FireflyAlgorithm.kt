@@ -52,7 +52,7 @@ class FireflyAlgorithm : SwarmAlgorithm() {
 
             val currentGenerationBestIntensityIndividual = getBestIndividual()
             if (currentGenerationBestIntensityIndividual.intensity > bestIndividualInAllGenerations.intensity) {
-                bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy()
+                bestIndividualInAllGenerations = currentGenerationBestIntensityIndividual.deepCopy() as FireflyIndividual
             }
 
             iterationCount++
