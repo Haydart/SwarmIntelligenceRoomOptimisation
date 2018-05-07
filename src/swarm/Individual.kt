@@ -7,10 +7,11 @@ import kotlin.math.pow
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
-open class Individual(val room: Room) {
+abstract class Individual(val room: Room) {
+
+    var intensity = 0.0
 
     var coords: MutableList<Pair<Double, Double>> = mutableListOf()
-    var intensity = 0.0
 
     init {
         room.furnitureList.forEach {
@@ -32,19 +33,7 @@ open class Individual(val room: Room) {
         return distance
     }
 
-    open fun deepCopy(): Individual {
-        val coordsCopy = mutableListOf<Pair<Double, Double>>()
-        coords.forEach { (x, y) ->
-            coordsCopy.add(Pair(x, y))
-        }
+    abstract fun deepCopy(): Individual
 
-        val result = Individual(room)
-        result.intensity = intensity
-        result.coords = coordsCopy
-        return result
-    }
-
-    override fun toString(): String {
-        return coords.toString()
-    }
+    override fun toString() = coords.toString()
 }

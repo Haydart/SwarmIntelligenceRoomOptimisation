@@ -1,18 +1,26 @@
 package swarm
 
 import evaluation.GenerationStatistics
+import evaluation.RoomConfigurationEvaluator
 import model.FurniturePiece
 import model.Room
 
-abstract class SwarmAlgorithm {
+private const val DEFAULT_POPULATION_SIZE = 100
+private const val DEFAULT_GENERATION_COUNT = 1000
+
+abstract class SwarmAlgorithm(
+        val populationSize: Int = DEFAULT_POPULATION_SIZE,
+        val generationCount: Int = DEFAULT_GENERATION_COUNT
+) {
 
     val roomWidth = 150.0
     val roomHeight = 100.0
 
-    abstract fun runOptimisation(historyData: MutableList<MutableList<Individual>>? = null,
-                                 lastRunStatistics: MutableList<GenerationStatistics>? = null): Individual
+    private val testFunction = RoomConfigurationEvaluator()
 
-    abstract fun getBestIndividual(): Individual
+    abstract val population: MutableList<out Individual>
+
+    abstract fun generateInitialPopulation()
 
     protected fun initRoom(): Room {
         val furnitureList = mutableListOf<FurniturePiece>()
@@ -30,22 +38,40 @@ abstract class SwarmAlgorithm {
         return Room(furnitureList, roomWidth, roomHeight)
     }
 
-    fun getPopulationStatistics(population: MutableList<Individual>, generationNumber: Int): GenerationStatistics {
-        var best = population[0].intensity
-        var worst = population[0].intensity
-        var avg = 0.0
+    abstract fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>? = null,
+            lastRunStatistics: MutableList<GenerationStatistics>? = null
+    ): Individual
 
-        for (ind in population) {
-            if (ind.intensity > best) {
-                best = ind.intensity
+    abstract fun getBestIndividual(): Individual
+
+    fun getPopulationStatistics(population: MutableList<out Individual>, generationNumber: Int): GenerationStatistics {
+        var bestIntensity = population[0].intensity
+        var worstIntensity = population[0].intensity
+        var averageIntensity = 0.0
+
+        for (individual in population) {
+            if (individual.intensity > bestIntensity) {
+                bestIntensity = individual.intensity
             }
-            if (ind.intensity < worst) {
-                worst = ind.intensity
+            if (individual.intensity < worstIntensity) {
+                worstIntensity = individual.intensity
             }
-            avg += ind.intensity
+            averageIntensity += individual.intensity
         }
-        avg /= population.size.toDouble()
+        averageIntensity /= population.size.toDouble()
 
-        return GenerationStatistics(best, worst, avg, generationNumber)
+        return GenerationStatistics(bestIntensity, worstIntensity, averageIntensity, generationNumber)
+    }
+
+    protected fun evaluatePopulation() {
+        population.forEach {
+            evaluateIndividual(it)
+            println("Individual intensity: ${it.intensity}")
+        }
+    }
+
+    protected fun evaluateIndividual(individual: Individual) {
+        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
     }
 }

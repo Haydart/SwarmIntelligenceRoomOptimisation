@@ -1,37 +1,44 @@
-package swarm
+package swarm.bats
 
 import evaluation.GenerationStatistics
-import evaluation.RastriginTest
-import evaluation.RestrictedRastriginTest
-import evaluation.RoomConfigurationEvaluator
+import swarm.Individual
+import swarm.SwarmAlgorithm
 
-class BatAlgorithm : SwarmAlgorithm(){
+class BatAlgorithm(
+        private val fMin: Double = 0.0,
+        private val fMax: Double = 8.0,
+        private val alpha: Double = 0.9,
+        private val gamma: Double = 0.9
+) : SwarmAlgorithm() {
 
-    val fMin = 0.0
-    val fMax = 10.0
 
-    val alpha = 0.9
-    val gamma = 0.9
-
-    val populationSize = 200
-    val generationCount = 1000
-
-    val population: MutableList<BatIndividual> = mutableListOf()
-    val testFunction = RoomConfigurationEvaluator()
+    override val population: MutableList<BatIndividual> = mutableListOf()
 
     init {
         generateInitialPopulation()
         evaluatePopulation()
     }
 
-    override fun runOptimisation(historyData: MutableList<MutableList<Individual>>?,
-                                 lastRunStatistics: MutableList<GenerationStatistics>?): Individual {
+    override fun generateInitialPopulation() {
+        val room = initRoom()
+
+        (0 until populationSize).forEach {
+            population.add(BatIndividual(room))
+        }
+
+        println(population[0])
+    }
+
+    override fun runOptimisation(
+            historyData: MutableList<MutableList<Individual>>?,
+            lastRunStatistics: MutableList<GenerationStatistics>?
+    ): Individual {
 
         var iteration = 0
         var currentBestIndividual: BatIndividual = getBestIndividual()
         var bestIndividualInAllGenerations = currentBestIndividual
 
-        lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
+        lastRunStatistics?.add(getPopulationStatistics(population, iteration))
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
@@ -43,7 +50,7 @@ class BatAlgorithm : SwarmAlgorithm(){
 
                 updateBatVelocityAndPosition(population[i], bestIndividualInAllGenerations)
 
-                val avgA = calcAvgA()
+                val avgA = calculateAverageA()
                 if (Math.random() > population[i].r) {
                     moveTowardsBest(population[i], bestIndividualInAllGenerations, avgA)
                 }
@@ -78,28 +85,18 @@ class BatAlgorithm : SwarmAlgorithm(){
                 historyData.add(currentIterationHistory)
             }
 
-            lastRunStatistics?.add(getPopulationStatistics(population as MutableList<Individual>, iteration))
+            lastRunStatistics?.add(getPopulationStatistics(population, iteration))
         }
 
         return bestIndividualInAllGenerations
     }
 
-    private fun calcAvgA(): Double {
+    private fun calculateAverageA(): Double {
         var result = 0.0
         population.forEach {
             result += it.A
         }
         return result / populationSize.toDouble()
-    }
-
-    private fun generateInitialPopulation() {
-        val room = initRoom()
-
-        (0 until populationSize).forEach {
-            population.add(BatIndividual(room))
-        }
-
-        println(population[0])
     }
 
     private fun updateBatVelocityAndPosition(currentBat: BatIndividual, currentGlobalBestBat: BatIndividual) {
@@ -126,17 +123,6 @@ class BatAlgorithm : SwarmAlgorithm(){
 
             currentBat.coords[index] = Pair(newX, newY)
         }
-    }
-
-    fun evaluatePopulation() {
-        population.forEach {
-            evaluateIndividual(it)
-            println("Individual intensity: ${it.intensity}")
-        }
-    }
-
-    fun evaluateIndividual(individual: Individual) {
-        individual.intensity = 1 / testFunction.evaluateIndividual(individual)
     }
 
     override fun getBestIndividual(): BatIndividual {
