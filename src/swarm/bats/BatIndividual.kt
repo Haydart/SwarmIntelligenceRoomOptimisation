@@ -6,8 +6,8 @@ import swarm.Individual
 class BatIndividual(room: Room) : Individual(room){
 
     var velocity: MutableList<Pair<Double, Double>> = mutableListOf()
-    var r = Math.random()
-    var A = 0.5
+    var r = 0.9
+    var A = 0.9
 
     init {
         room.furnitureList.forEach {

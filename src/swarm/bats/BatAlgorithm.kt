@@ -6,11 +6,9 @@ import swarm.SwarmAlgorithm
 
 class BatAlgorithm(
         private val fMin: Double = 0.0,
-        private val fMax: Double = 2.0,
+        private val fMax: Double = 8.0,
         private val alpha: Double = 0.9,
-        private val gamma: Double = 0.9,
-        private val randomFlyMin: Double = 0.1,
-        private val randomFlyMax: Double = 2.0
+        private val gamma: Double = 0.9
 ) : SwarmAlgorithm() {
 
 
@@ -44,6 +42,12 @@ class BatAlgorithm(
 
         while (iteration < generationCount) {
             (0 until populationSize).forEach { i ->
+                val originalCoords = mutableListOf<Pair<Double, Double>>()
+                population[i].coords.forEach { (x, y) ->
+                    originalCoords.add(Pair(x, y))
+                }
+                val originalIntensivity = population[i].intensity
+
                 updateBatVelocityAndPosition(population[i], bestIndividualInAllGenerations)
 
                 val avgA = calculateAverageA()
@@ -53,16 +57,14 @@ class BatAlgorithm(
 
                 evaluateIndividual(population[i])
 
-                // Generate random solution by flying randomly
-                if (Math.random() < population[i].A) {
-                    val newPotentialSolution = population[i].deepCopy()
-                    flyRandomly(newPotentialSolution)
-                    evaluateIndividual(newPotentialSolution)
-                    if (newPotentialSolution.intensity > currentBestIndividual.intensity) {
-                        population[i] = newPotentialSolution
-                        population[i].A = population[i].A * alpha
-                        population[i].r = population[i].r * (1 - Math.exp(-gamma * iteration))
-                    }
+                if (Math.random() < population[i].A && population[i].intensity > originalIntensivity) {
+                    population[i].A = population[i].A * alpha
+                    population[i].r = population[i].r * (1 - Math.exp(-gamma * iteration))
+                }
+                else {
+                    // Revert
+                    population[i].coords = originalCoords
+                    population[i].intensity = originalIntensivity
                 }
             }
 
@@ -110,15 +112,6 @@ class BatAlgorithm(
             val newY = y + vy
 
             currentBat.velocity[index] = Pair(newVX, newVY)
-            currentBat.coords[index] = Pair(newX, newY)
-        }
-    }
-
-    private fun flyRandomly(currentBat: BatIndividual) {
-        currentBat.coords.forEachIndexed { index, (x, y) ->
-            val newX = x + randomFlyMin + (randomFlyMax - randomFlyMin) * Math.random()
-            val newY = y + randomFlyMin + (randomFlyMax - randomFlyMin) * Math.random()
-
             currentBat.coords[index] = Pair(newX, newY)
         }
     }
