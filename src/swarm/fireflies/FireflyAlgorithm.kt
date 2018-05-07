@@ -10,7 +10,7 @@ import kotlin.math.exp
  * Created by r.makowiecki on 14/04/2018.
  */
 class FireflyAlgorithm(
-        private val alpha: Double = 0.05,
+        private val alpha: Double = 1.05,
         private val beta: Double = 0.09,
         private val gamma: Double = 0.0001
 ) : SwarmAlgorithm() {

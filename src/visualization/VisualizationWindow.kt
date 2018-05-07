@@ -12,6 +12,7 @@ import javafx.scene.layout.HBox
 import javafx.scene.paint.Color
 import javafx.stage.Stage
 import model.GenerationStatistics
+import model.Room
 import swarm.Individual
 import swarm.SwarmAlgorithm
 
@@ -45,6 +46,7 @@ class VisualizationWindow : Application() {
 
     private val furnitureColor: Color = Color.CORNFLOWERBLUE
     private val initFurnitureColor: Color = Color.CORAL
+    private val obstacleColor: Color = Color.color(1.0, 0.4, 0.6, 1.0)
 
     override fun start(primaryStage: Stage) {
         initUI(primaryStage)
@@ -57,6 +59,7 @@ class VisualizationWindow : Application() {
             drawRoomBounds(gc, it, 0.0, 0.0)
             if (initialBestIndividual != null) {
                 drawFurniturePieces(gc, initialBestIndividual!!, initFurnitureColor, 0.0, 0.0)
+                drawObstaclesIfPresent(gc, initialBestIndividual!!.room, obstacleColor, 0.0, 0.0)
             }
             if (lastGlobalBestIndividual != null) {
                 drawFurniturePieces(gc, lastGlobalBestIndividual!!, furnitureColor, 0.0, 0.0)
@@ -68,6 +71,8 @@ class VisualizationWindow : Application() {
                     drawRoomBounds(gc, it, (i / HIST_IND_IN_ROW) * it.roomWidth,
                             (i % HIST_IND_IN_COL + 1) * it.roomHeight)
                     drawFurniturePieces(gc, currentIterationData[i], furnitureColor, (i / HIST_IND_IN_ROW) * it.roomWidth,
+                            (i % HIST_IND_IN_COL + 1) * it.roomHeight)
+                    drawObstaclesIfPresent(gc, currentIterationData[i].room, obstacleColor, (i / HIST_IND_IN_ROW) * it.roomWidth,
                             (i % HIST_IND_IN_COL + 1) * it.roomHeight)
                 }
             }
@@ -87,6 +92,15 @@ class VisualizationWindow : Application() {
             val furniturePiece = individual.room.furnitureList[index]
             gc.strokeRect(x - furniturePiece.width / 2 + offsetX, y - furniturePiece.height / 2 + offsetY,
                     furniturePiece.width, furniturePiece.height)
+        }
+    }
+
+    private fun drawObstaclesIfPresent(gc: GraphicsContext, room: Room, color: Color, offsetX: Double, offsetY: Double) {
+        gc.stroke = color
+        gc.lineWidth = 2.0
+        room.obstacleList.forEachIndexed { index, obstacle ->
+            gc.fillRect(obstacle.x - obstacle.width / 2 + offsetX, obstacle.y - obstacle.height / 2 + offsetY,
+                    obstacle.width, obstacle.height)
         }
     }
 

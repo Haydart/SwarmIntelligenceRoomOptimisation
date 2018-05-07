@@ -38,10 +38,10 @@ abstract class SwarmAlgorithm(
         val obstacleList = mutableListOf<RoomObstacle>()
 
         if (testFunction is RoomConfigurationEvaluationFunction) {
-            obstacleList.add(RoomObstacle(width = 20.0, height = 20.0, x = 0.0, y = 0.0))
-            obstacleList.add(RoomObstacle(width = 10.0, height = 40.0, x = 0.0, y = 35.0))
-            obstacleList.add(RoomObstacle(width = 30.0, height = 10.0, x = 45.0, y = 140.0))
-            obstacleList.add(RoomObstacle(width = 25.0, height = 10.0, x = 100.0, y = 140.0))
+            obstacleList.add(RoomObstacle(width = 36.0, height = 36.0, x = 18.0, y = 18.0))
+            obstacleList.add(RoomObstacle(width = 30.0, height = 20.0, x = 15.0, y = 55.0))
+            obstacleList.add(RoomObstacle(width = 35.0, height = 20.0, x = 40.0, y = 90.0))
+            obstacleList.add(RoomObstacle(width = 25.0, height = 20.0, x = 100.0, y = 90.0))
         }
 
         return Room(furnitureList, obstacleList, roomWidth, roomHeight)
