@@ -46,7 +46,7 @@ class VisualizationWindow : Application() {
 
     private val furnitureColor: Color = Color.CORNFLOWERBLUE
     private val initFurnitureColor: Color = Color.CORAL
-    private val obstacleColor: Color = Color.color(1.0, 0.4, 0.6, 1.0)
+    private val obstacleColor: Color = Color.color(0.9, 0.0, 0.0, 0.3)
 
     override fun start(primaryStage: Stage) {
         initUI(primaryStage)
@@ -96,7 +96,7 @@ class VisualizationWindow : Application() {
     }
 
     private fun drawObstaclesIfPresent(gc: GraphicsContext, room: Room, color: Color, offsetX: Double, offsetY: Double) {
-        gc.stroke = color
+        gc.fill = color
         gc.lineWidth = 2.0
         room.obstacleList.forEachIndexed { index, obstacle ->
             gc.fillRect(obstacle.x - obstacle.width / 2 + offsetX, obstacle.y - obstacle.height / 2 + offsetY,
