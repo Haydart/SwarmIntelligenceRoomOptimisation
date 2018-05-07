@@ -88,18 +88,24 @@ class PsoAlgorithm(
         }
     }
 
-    private fun updateParticlePersonalBestIfNeeded(i: Int) {
-        if (population[i].intensity > population[i].personalBestIntensity) {
-            population[i].personalBestIntensity = population[i].intensity
-            population[i].personalBestCoords = population[i].coords.
+    private fun updateParticlePersonalBestIfNeeded(index: Int) {
+        if (population[index].intensity > population[index].personalBestIntensity) {
+            population[index].personalBestIntensity = population[index].intensity
+            population[index].personalBestCoords = population[index].coords.deepCopy()
         }
     }
 
-    private fun updateParticleGlobalBestIfNeeded(i: Int) {
-
+    private fun updateParticleGlobalBestIfNeeded(index: Int) {
+        if (population[index].intensity > globalBest.intensity) {
+            globalBest = population[index].deepCopy() as ParticleIndividual
+        }
     }
 
     override fun getBestIndividual(): Individual {
         return population.maxBy { it.intensity }!!
     }
+}
+
+fun <T> MutableList<T>.deepCopy(): MutableList<T> {
+    return this.toMutableList()
 }
