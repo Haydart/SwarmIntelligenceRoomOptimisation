@@ -1,6 +1,10 @@
 package swarm.fireflies
 
-import evaluation.GenerationStatistics
+import evaluation.EvaluationFunction
+import evaluation.RoomConfigurationEvaluationFunction
+import model.GenerationStatistics
+import swarm.DEFAULT_GENERATION_COUNT
+import swarm.DEFAULT_POPULATION_SIZE
 import swarm.Individual
 import swarm.SwarmAlgorithm
 import java.lang.Math.random
@@ -10,10 +14,17 @@ import kotlin.math.exp
  * Created by r.makowiecki on 14/04/2018.
  */
 class FireflyAlgorithm(
-        private val alpha: Double = 0.05,
+        private val alpha: Double = 1.05,
         private val beta: Double = 0.09,
-        private val gamma: Double = 0.0001
-) : SwarmAlgorithm() {
+        private val gamma: Double = 0.0001,
+        testFunction: EvaluationFunction = RoomConfigurationEvaluationFunction(),
+        populationSize: Int = DEFAULT_POPULATION_SIZE,
+        generationCount: Int = DEFAULT_GENERATION_COUNT,
+        hasObstacles: Boolean = false,
+        roomWidth: Double = 150.0,
+        roomHeight: Double = 100.0
+) : SwarmAlgorithm(testFunction, populationSize, generationCount, hasObstacles, roomWidth, roomHeight) {
+
 
     override val population: MutableList<FireflyIndividual> = mutableListOf()
 

@@ -1,8 +1,13 @@
 package swarm.particles
 
-import evaluation.GenerationStatistics
+import evaluation.EvaluationFunction
+import evaluation.RoomConfigurationEvaluationFunction
+import model.GenerationStatistics
+import swarm.DEFAULT_GENERATION_COUNT
+import swarm.DEFAULT_POPULATION_SIZE
 import swarm.Individual
 import swarm.SwarmAlgorithm
+
 
 /**
  * Created by r.makowiecki on 07/05/2018.
@@ -10,8 +15,14 @@ import swarm.SwarmAlgorithm
 class PsoAlgorithm(
         private val swarmInertia: Double = .8,
         private val particlePersonalAcceleration: Double = 1.4,
-        private val particleSocialAcceleration: Double = 0.6
-) : SwarmAlgorithm() {
+        private val particleSocialAcceleration: Double = 0.6,
+        testFunction: EvaluationFunction = RoomConfigurationEvaluationFunction(),
+        populationSize: Int = DEFAULT_POPULATION_SIZE,
+        generationCount: Int = DEFAULT_GENERATION_COUNT,
+        hasObstacles: Boolean = false,
+        roomWidth: Double = 150.0,
+        roomHeight: Double = 100.0
+) : SwarmAlgorithm(testFunction, populationSize, generationCount, hasObstacles, roomWidth, roomHeight) {
 
     lateinit var globalBest: ParticleIndividual
 

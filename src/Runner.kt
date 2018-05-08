@@ -1,7 +1,5 @@
 import swarm.SwarmAlgorithm
-import swarm.bats.BatAlgorithm
 import swarm.fireflies.FireflyAlgorithm
-import swarm.particles.PsoAlgorithm
 import visualization.VisualizationWindow
 
 /**

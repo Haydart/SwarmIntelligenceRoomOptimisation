@@ -8,9 +8,9 @@ import kotlin.math.pow
 /**
  * Created by r.makowiecki on 14/04/2018.
  */
-class RastriginTest {
+class RastriginTestFunction : EvaluationFunction() {
 
-    fun evaluateIndividual(individual: Individual): Double {
+    override fun evaluateIndividual(individual: Individual): Double {
 
         var sumFactor = 10.0 * individual.coords.size * 2
         individual.coords.forEach { (x, y) ->

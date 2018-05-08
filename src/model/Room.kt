@@ -5,6 +5,7 @@ package model
  */
 class Room(
         val furnitureList: MutableList<FurniturePiece>,
+        val obstacleList: MutableList<RoomObstacle>,
         val width: Double,
         val height: Double
 )

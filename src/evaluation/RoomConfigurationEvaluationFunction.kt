@@ -1,6 +1,7 @@
 package evaluation
 
 import model.FurniturePiece
+import model.RoomObstacle
 import swarm.Individual
 import kotlin.math.pow
 
@@ -10,9 +11,9 @@ import kotlin.math.pow
 
 const val PUNISHMENT_VALUE = 1000.0
 
-class RoomConfigurationEvaluator {
+class RoomConfigurationEvaluationFunction : EvaluationFunction() {
 
-    fun evaluateIndividual(individual: Individual): Double {
+    override fun evaluateIndividual(individual: Individual): Double {
         var result = 0.0001
         val furnitureCount = individual.coords.size
 
@@ -22,7 +23,13 @@ class RoomConfigurationEvaluator {
             result += punishIfFurnitureOutsideRoom(individual, i)
 
             for (j in i + 1 until furnitureCount) {
-                if (isFurnitureOverlapping(individual.coords[i], individual.room.furnitureList[i], individual.coords[j], individual.room.furnitureList[j])) {
+                if (areFurniturePiecesOverlapping(individual.coords[i], individual.room.furnitureList[i], individual.coords[j], individual.room.furnitureList[j])) {
+                    result += PUNISHMENT_VALUE
+                }
+            }
+
+            individual.room.obstacleList.forEach { obstacle ->
+                if (isFurniturePieceOverlappingWithObstacle(individual.coords[i], individual.room.furnitureList[i], obstacle)) {
                     result += PUNISHMENT_VALUE
                 }
             }
@@ -46,7 +53,7 @@ class RoomConfigurationEvaluator {
             PUNISHMENT_VALUE else 0.0
     }
 
-    private fun isFurnitureOverlapping(furn1Pos: Pair<Double, Double>, furn1Info: FurniturePiece, furn2Pos: Pair<Double, Double>, furn2Info: FurniturePiece): Boolean {
+    private fun areFurniturePiecesOverlapping(furn1Pos: Pair<Double, Double>, furn1Info: FurniturePiece, furn2Pos: Pair<Double, Double>, furn2Info: FurniturePiece): Boolean {
         val leftA = furn1Pos.first - furn1Info.width / 2
         val rightA = furn1Pos.first + furn1Info.width / 2
         val topA = furn1Pos.second - furn1Info.height / 2
@@ -56,6 +63,20 @@ class RoomConfigurationEvaluator {
         val rightB = furn2Pos.first + furn2Info.width / 2
         val topB = furn2Pos.second - furn2Info.height / 2
         val bottomB = furn2Pos.second + furn2Info.height / 2
+
+        return (leftA < rightB && rightA > leftB && topA < bottomB && bottomA > topB)
+    }
+
+    private fun isFurniturePieceOverlappingWithObstacle(furn1Pos: Pair<Double, Double>, furn1Info: FurniturePiece, obstacle: RoomObstacle): Boolean {
+        val leftA = furn1Pos.first - furn1Info.width / 2
+        val rightA = furn1Pos.first + furn1Info.width / 2
+        val topA = furn1Pos.second - furn1Info.height / 2
+        val bottomA = furn1Pos.second + furn1Info.height / 2
+
+        val leftB = obstacle.x - obstacle.width / 2
+        val rightB = obstacle.x + obstacle.width / 2
+        val topB = obstacle.y - obstacle.height / 2
+        val bottomB = obstacle.y + obstacle.height / 2
 
         return (leftA < rightB && rightA > leftB && topA < bottomB && bottomA > topB)
     }
